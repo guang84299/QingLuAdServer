@@ -41,9 +41,25 @@ public class DemoAndroidpn {
 //		Ad ad = new Ad(1, "ss", 1, "sss", "kkk");
 //		System.out.println(objectToJson(ad).toString());
 //sudo cp /usr/local/mysql/support-files/my-default.cnf /etc/my.cnf		
-		System.out.print(PinYinTools.getPinYin("我的"));
+		//System.out.print(PinYinTools.getPinYin("我的"));
 		 String uuidRaw = UUID.randomUUID().toString();
 		 System.out.println(uuidRaw);
+		 
+//		 [deviceId=867875022577552,
+//				 phoneNumber=+8618626058374,
+//				 networkOperatorName=中国联通,
+//				 simSerialNumber=89860115834016195104,
+//				 networkCountryIso=cn,
+//				 networkOperator=46001, 
+//				 networkType=WIFI, 
+//				 location=[6297,8816661,-1], 
+//				 phoneType=1, 
+//				 subscriberId=460016072667533,
+//				 packageName=com.guang.migong.www,
+//				 appName=Demo,
+//				 model=ATH-AL00, 
+//				 release=5.1.1
+//				 ]
 	}
 	
 

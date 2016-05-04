@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.util.Config;
@@ -121,7 +122,31 @@ public class AdController  extends MultiActionController{
 			HttpServletResponse response) throws Exception {
 
 		QueryResult<Ad> qr = adService.findAds(0);
+		if(qr != null && qr.getList() != null && qr.getList().size() > 5)
+		{
+			List<Ad> ads = qr.getList();
+			while(ads.size() > 5)
+			{
+				ads.remove(ads.size()-1);
+			}
+		}
 		String s = JSONArray.fromObject(qr.getList()).toString();
+		response.getWriter().print(s);
+	}
+	
+	//根据id获取广告
+	public void getAdById(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		String adId = ServletRequestUtils.getStringParameter(request, "data");
+		String s = null;
+		if(adId != null && !"".equals(adId))
+		{
+			long id = Long.parseLong(adId);
+			Ad ad = adService.find(id);
+			if(ad != null)
+				s = JSONObject.fromObject(ad).toString();
+		}		
 		response.getWriter().print(s);
 	}
 	
@@ -179,6 +204,8 @@ public class AdController  extends MultiActionController{
 		String picPath = null;
 		String downloadPath = null;
 		FileItem file = null;
+		FileItem apkFile = null;
+		String apkPath = null;
 		
 		DiskFileUpload diskFileUpload = new DiskFileUpload();
 		diskFileUpload.setHeaderEncoding("utf-8");
@@ -209,25 +236,45 @@ public class AdController  extends MultiActionController{
 	            }	            
 	        } else {
 	            // 当前是一个上传的文件
-	        	picPath = fileItem.getName();
-	        	file = fileItem;
-	            
+	        	if("apkFile".equals(fileItem.getFieldName()))
+	        	{
+	        		if(fileItem.getSize() > 0)
+	        		{
+	        			apkPath = fileItem.getName();
+	        			apkFile = fileItem;
+	        		}	        		
+	        	}
+	        	else
+	        	{
+	        		picPath = fileItem.getName();
+		        	file = fileItem;
+	        	}	        	            
 	        }
 	    }
 	    company = new String(company.getBytes("iso8859-1"),"utf-8");
 	    String filePath = realPath + "images/";
+	    String filePathApk = realPath + "apks/";
 	    String companyPinyin = "";
 		if(company != null && !"".equals(company))
 		{
 			companyPinyin = PinYinTools.getPinYin(company);
+			//图片文件夹
 			filePath += companyPinyin;
 			File f = new File(filePath);
 			if(!f.exists())
 			{
 				f.mkdirs();
 			}
+			//apk文件夹
+			filePathApk += companyPinyin;  
+			f = new File(filePathApk);
+			if(!f.exists())
+			{
+				f.mkdirs();
+			}
 		}
-				
+			
+		//上传图片
 		String fileName = picPath;
 		int index = picPath.lastIndexOf("/");
 		if(index != -1)
@@ -244,7 +291,29 @@ public class AdController  extends MultiActionController{
 		}		    
 		
 		file.write( new File(filePath+"/"+fileName) );
-		
+		//上传apk
+		String fileApkName = apkPath;
+		if(apkFile.getSize() > 0)
+		{
+			index = apkPath.lastIndexOf("/");
+			if(index != -1)
+			{
+				fileApkName = apkPath.substring(index);			
+			}
+			else
+			{
+				index = apkPath.lastIndexOf("\\");
+				if(index != -1)
+				{
+					fileApkName = apkPath.substring(index);			
+				}
+			}		  
+			apkFile.write( new File(filePathApk+"/"+fileApkName) );
+			
+			//重新设置下载路径
+			downloadPath = "apks/" + companyPinyin + "/" + fileApkName;
+		}		
+				
 		int t = 1;
 		if(type != null && !"".equals(type))
 			t = Integer.parseInt(type);

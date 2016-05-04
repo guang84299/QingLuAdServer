@@ -39,12 +39,43 @@
 	<td>主题:</td>
 	<td><textarea id="message" name="message" style="width:380px; height:80px;" >这是一个聚合广告推送!</textarea></td>
 </tr>
+<tr>
+	<td>下载路径:</td>
+	<td><input type="text" id="uri" name="uri" value="" style="width:380px;" /></td>
+</tr>
 <%--
 <tr>
 	<td>Ticker:</td>
 	<td><input type="text" id="ticker" name="ticker" value="" style="width:380px;" /></td>
 </tr>
 --%>
+
+<tr>
+	<td>&nbsp;</td>
+	<td><input type="submit" value="推送" /></td>
+</tr>
+</table> 
+</form>
+</div>
+
+
+<h1>推送插屏</h1>
+
+<div style="margin:20px 0px;">
+<form action="notification.do?action=sendSpot" method="post" style="margin: 0px;">
+<table width="600" cellpadding="4" cellspacing="0" border="0">
+<tr>
+	<td width="20%">类型:</td>
+	<td width="80%">
+		<input type="radio" name="broadcast2" value="all" checked="checked" />  所有在线用户 
+        <input type="radio" name="broadcast2" value="single" /> 单个用户 
+        <input type="radio" name="broadcast2" value="app" /> 应用用户 
+	</td>
+</tr>
+
+	<td>广告ID:</td>
+	<td><input type="text" id="adId" name="adId" value="" style="width:380px;" /></td>
+</tr>
 
 <tr>
 	<td>&nbsp;</td>

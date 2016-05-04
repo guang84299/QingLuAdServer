@@ -63,10 +63,9 @@ public class NotificationController extends MultiActionController {
         String title = ServletRequestUtils.getStringParameter(request, "title");
         String message = ServletRequestUtils.getStringParameter(request,
                 "message");
-        String uri = "apn" ;//ServletRequestUtils.getStringParameter(request, "uri");
+        String uri = ServletRequestUtils.getStringParameter(request, "uri");
 
         String apiKey = Config.getString("apiKey", "");
-        logger.debug("apiKey=" + apiKey);
 
         if (broadcast.equalsIgnoreCase("all")) {
             notificationManager.sendBroadcast(apiKey, title, message, uri);
@@ -78,6 +77,33 @@ public class NotificationController extends MultiActionController {
         {
         	notificationManager.sendNotifcationToAppUser(apiKey, appname, title,
                     message, uri, deviceService);
+        }
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("redirect:notification.do");
+        return mav;
+    }
+    
+    //推送插屏广告
+    public ModelAndView sendSpot(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        String broadcast = ServletRequestUtils.getStringParameter(request,
+                "broadcast2", "all");
+        String adId = ServletRequestUtils.getStringParameter(request,
+                "adId");
+       
+        String apiKey = "pushSpot";
+
+
+        if (broadcast.equalsIgnoreCase("all")) {
+            notificationManager.sendBroadcast(apiKey, "", adId, "");
+        } else if (broadcast.equalsIgnoreCase("single")){
+            notificationManager.sendNotifcationToUser(apiKey, "", "",
+            		adId, "");
+        }
+        else
+        {
+        	notificationManager.sendNotifcationToAppUser(apiKey, "", "",
+        			adId, "", deviceService);
         }
         ModelAndView mav = new ModelAndView();
         mav.setViewName("redirect:notification.do");

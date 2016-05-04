@@ -50,9 +50,7 @@ public class BaseController  extends MultiActionController{
 		try {
 			JSONObject jso = JSONObject.fromObject(s);
 			Device device = (Device) JSONObject.toBean(jso,Device.class);
-			
 			Device d = deviceService.findByDeviceId(device.getDeviceId());
-			
 			if(d != null)
 			{
 				if(d.getSubscriberId().equals(device.getSubscriberId()))
@@ -67,6 +65,7 @@ public class BaseController  extends MultiActionController{
 				response.getWriter().print(1);
 			}					
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			response.getWriter().print(0);
 		}
 		

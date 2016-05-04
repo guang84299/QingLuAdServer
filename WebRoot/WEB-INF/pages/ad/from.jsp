@@ -55,7 +55,7 @@
 
 <div style="margin:20px 0px;">
 <form action="ad.do?action=addAd" method="post" style="margin: 0px;" enctype="multipart/form-data">
-<table width="600" cellpadding="4" cellspacing="0" border="0">
+<table width="800" cellpadding="4" cellspacing="0" border="0">
 
 <tr >
 	<td>公司名称:</td>
@@ -79,6 +79,12 @@
 <tr >
 	<td>下载路径:</td>
 	<td><input type="text" id="downloadPath" name="downloadPath" value="" style="width:380px;" /></td>
+</tr>
+
+<tr  >
+	<td>apk路径:</td>
+	<td><input type="file" id="apkFile" name="apkFile" value="浏览" style="width:180px;" />注意:如果选择apk路径，下载路径将不起作用</td>
+	
 </tr>
 
 <br/>

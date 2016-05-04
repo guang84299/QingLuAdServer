@@ -25,7 +25,7 @@ public class Device implements Serializable {
 	@Column(name = "deviceId", nullable = false, length = 64, unique = true) 
 	private String deviceId;//imei
 	
-	@Column(name = "phoneNumber",  length = 12) 
+	@Column(name = "phoneNumber",  length = 64) 
 	private String phoneNumber;//手机号码
 	
 	@Column(name = "networkOperatorName",  length = 64) 

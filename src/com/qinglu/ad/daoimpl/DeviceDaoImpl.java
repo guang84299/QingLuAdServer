@@ -35,7 +35,7 @@ public class DeviceDaoImpl extends HibernateDaoSupport implements DeviceDao {
 	public Device find(String colName, String value) {
 		List<Device> list = getHibernateTemplate().find(
 				"from Device d where d."+colName+"=?",value);
-		if(list.size() > 0)
+		if(list != null && list.size() > 0)
 			return list.get(0);
 		return null;
 	}
