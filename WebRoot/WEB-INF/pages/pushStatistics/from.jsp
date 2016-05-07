@@ -18,7 +18,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <h1>推送统计</h1>
 
-<div style="position:relative">
 
 <table id="tableList" class="tablesorter"  cellspacing="1">
 	<thead>
@@ -32,7 +31,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<th>展示次数</th>
 			<th>点击次数</th>	
 			<th>下载次数</th>
-			<th>安装次数</th>			
+			<th>安装次数</th>	
+			<th>操作</th>		
 		</tr>
 	</thead>
 	<tbody>
@@ -70,6 +70,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td class="tdclickNum"><c:out value="${sess.clickNum}" /></td>
 				<td class="tddownloadNum"><c:out value="${sess.downloadNum}" /></td>
 				<td class="tdinstallNum"><c:out value="${sess.installNum}" /></td>
+				<td class="thUpdate"><input type="button" value="操作"/></td>
 			</tr>
 		</c:forEach>
 	</tbody>
@@ -98,9 +99,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </table>
 </div>
 
+<div id="div_update" style="display:none;position:absolute;width:100px;">
+<table  class="tablesorter" cellspacing="1">
+	<thead>
+		<tr>			
+			<th>操作</th>
+		</tr>
+	</thead>		
+	<tr><td><input type="button" value="删除" id="delete"/></td></tr>
+</table>
 </div>
 
+
 <script lanuage="javascript">
+
+$("#delete").click(function()
+{
+	var data = $("#div_update").attr("title");
+	
+	var urll = "<%out.print(basePath); %>pushStatistics.do?action=deletePush&data=";
+	urll = urll + data;
+	$.ajax({url:urll,async:false});
+	$("#div_update").hide();
+	location.reload();
+});
+
+$(".thUpdate").click(function(){	
+	var x = $(this).offset().top; 
+	var y = $(this).offset().left - 100; 
+	var div = $("#div_update");
+	div.css("left",y + "px"); 
+	div.css("top",x + "px");
+	var preall = $(this).prevAll();
+	var id = preall[preall.length-1].innerHTML;
+	
+	div.attr("title",id);
+	div.show();
+});
+
 
 $("#tuisong").click(function()
 {
@@ -112,31 +148,37 @@ $("#tuisong").click(function()
 	$("#my_div2").hide();
 });
 
+var myHide = function(div,e)
+{
+	if(div.css('display') != "none")
+		{
+			var w = div.width();
+			var h = div.height();
+			
+			var left =  div.offset().left;
+			var top = div.offset().top;
+			if(e.pageX <= left+w && e.pageX >= left && e.pageY >= top && e.pageY <= top + h)
+			{
+				return;			
+			}
+			else
+			{
+				div.hide();
+			}
+		}
+}
+
 $("html").mousedown(function(e){
 	var div = $("#my_div2");
 	
-	if(div.css('display') != "none")
-	{
-		var w = div.width();
-		var h = div.height();
-		
-		var left =  div.offset().left;
-		var top = div.offset().top;
-		if(e.pageX <= left+w && e.pageX >= left && e.pageY >= top && e.pageY <= top + h)
-		{
-			return;			
-		}
-		else
-		{
-			div.hide();
-		}
-	}
+	myHide(div,e);
+	myHide($("#div_update"),e);
 });
 $(".tdclickNum").mousedown(function(e){ 
  // 1 = 鼠标左键 left; 2 = 鼠标中键; 3 = 鼠标右键 
 	if(e.which == 1)
 	{
-		var x = $(this).offset().top - $("#tableList").offset().top; 
+		var x = $(this).offset().top; 
 		var y = $(this).offset().left - 125; 
 		var my_div2 = $("#my_div2");
 		my_div2.css("left",y + "px"); 
@@ -166,7 +208,7 @@ $(".tddownloadNum").mousedown(function(e){
  // 1 = 鼠标左键 left; 2 = 鼠标中键; 3 = 鼠标右键 
 	if(e.which == 1)
 	{
-		var x = $(this).offset().top - $("#tableList").offset().top; 
+		var x = $(this).offset().top ; 
 		var y = $(this).offset().left - 125; 
 		var my_div2 = $("#my_div2");
 		my_div2.css("left",y + "px"); 
@@ -196,7 +238,7 @@ $(".tdinstallNum").mousedown(function(e){
  // 1 = 鼠标左键 left; 2 = 鼠标中键; 3 = 鼠标右键 
 	if(e.which == 1)
 	{
-		var x = $(this).offset().top - $("#tableList").offset().top; 
+		var x = $(this).offset().top ; 
 		var y = $(this).offset().left - 125; 
 		var my_div2 = $("#my_div2");
 		my_div2.css("left",y + "px"); 

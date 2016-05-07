@@ -47,5 +47,20 @@ public class AppController extends MultiActionController {
 		return mav;
 	}
 
-	
+	// 删除app记录
+	public void deleteApp(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String s = request.getParameter("data");
+		try {
+			long id = 0;
+			if (s != null && !"".equals(s)) {
+				id = Long.parseLong(s);
+			}
+			appService.delete(id);
+			response.getWriter().print(1);
+		} catch (Exception e) {
+			response.getWriter().print(0);
+		}
+	}
+
 }

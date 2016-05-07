@@ -86,4 +86,21 @@ public class StatisticsController  extends MultiActionController{
 			response.getWriter().print(0);
 		}
 	}
+	
+	//删除广告
+	public void deleteAd(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String s = request.getParameter("data");
+		try {
+			long id = 0;
+			if(s != null && !"".equals(s))
+			{
+				id = Long.parseLong(s);
+			}
+			adService.delete(id);	
+			response.getWriter().print(1);
+		} catch (Exception e) {
+			response.getWriter().print(0);
+		}		
+	}
 }

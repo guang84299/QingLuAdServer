@@ -165,7 +165,7 @@ public class PushStatisticsController extends MultiActionController {
 			if (s != null && !"".equals(s)) {
 				id = Long.parseLong(s);
 			}
-			List<UserPush> list = userPushService.findUserPushByPushId(id,5)
+			List<UserPush> list = userPushService.findUserPushByPushId(id, 5)
 					.getList();
 			String data = JSONArray.fromObject(list).toString();
 			response.getWriter().print(data);
@@ -184,7 +184,7 @@ public class PushStatisticsController extends MultiActionController {
 				id = Long.parseLong(s);
 			}
 			List<UserPush> list = userPushService.findByPushIdAndIsDownload(id,
-					1,5).getList();
+					1, 5).getList();
 			String data = JSONArray.fromObject(list).toString();
 			response.getWriter().print(data);
 		} catch (Exception e) {
@@ -202,7 +202,7 @@ public class PushStatisticsController extends MultiActionController {
 				id = Long.parseLong(s);
 			}
 			List<UserPush> list = userPushService.findByPushIdAndIsInstall(id,
-					1,5).getList();
+					1, 5).getList();
 			String data = JSONArray.fromObject(list).toString();
 			response.getWriter().print(data);
 		} catch (Exception e) {
@@ -210,4 +210,19 @@ public class PushStatisticsController extends MultiActionController {
 		}
 	}
 
+	// 删除push记录
+	public void deletePush(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String s = request.getParameter("data");
+		try {
+			long id = 0;
+			if (s != null && !"".equals(s)) {
+				id = Long.parseLong(s);
+			}
+			pushService.delete(id);
+			response.getWriter().print(1);
+		} catch (Exception e) {
+			response.getWriter().print(0);
+		}
+	}
 }

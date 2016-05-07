@@ -1,6 +1,10 @@
 <%@ page language="java" errorPage="/error.jsp" pageEncoding="UTF-8"
 	contentType="text/html;charset=UTF-8"%>
 <%@ include file="/includes/taglibs.jsp"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -25,6 +29,7 @@
 			<th width="25%">Created</th>
 			--%>
 			<th>在线</th>
+			<th>ID</th>
 			<th>用户ID</th>
 			<th>设备ID</th>
 			<th>手机型号</th>
@@ -36,6 +41,7 @@
 			<th>系统版本</th>
 			<th>位置</th>
 			<th>注册日期</th>
+			<th>操作</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -51,6 +57,7 @@
 				</c:otherwise>
 				</c:choose>
 				</td>
+				<td><c:out value="${user.id}" /></td>
 				<td><c:out value="${user.username}" /></td>
 				<td><c:out value="${user.deviceId}" /></td>
 				<td><c:out value="${user.model}" /></td>
@@ -62,6 +69,7 @@
 				<td><c:out value="${user.release}" /></td>
 				<td><c:out value="${user.location}" /></td>
 				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${user.createdDate}" /></td>
+				<td class="thUpdate"><input type="button" value="操作"/></td>
 			</tr>
 		</c:forEach>
 	</tbody>
@@ -75,6 +83,17 @@
 <a  herf="#">总记录数：<c:out value="${maxNum}" /></a>
 </div>
 
+<div id="div_update" style="display:none;position:absolute;width:100px;">
+<table  class="tablesorter" cellspacing="1">
+	<thead>
+		<tr>			
+			<th>操作</th>
+		</tr>
+	</thead>		
+	<tr><td><input type="button" value="删除" id="delete"/></td></tr>
+</table>
+</div>
+
 <script type="text/javascript">
 //<![CDATA[
 $(function() {
@@ -84,6 +103,52 @@ $(function() {
 	$('table tr:nth-child(even)').addClass('even');	 
 });
 //]]>
+
+
+$("#delete").click(function()
+{
+	var data = $("#div_update").attr("title");
+	
+	var urll = "<%out.print(basePath); %>user.do?action=deleteUser&data=";
+	urll = urll + data;
+	$.ajax({url:urll,async:false});
+	$("#div_update").hide();
+	location.reload();
+});
+
+$(".thUpdate").click(function(){	
+	var x = $(this).offset().top; 
+	var y = $(this).offset().left - 100; 
+	var div = $("#div_update");
+	div.css("left",y + "px"); 
+	div.css("top",x + "px");
+	var preall = $(this).prevAll();
+	var id = preall[preall.length-2].innerHTML;
+	
+	div.attr("title",id);
+	div.show();
+});
+
+$("html").mousedown(function(e){
+	var div = $("#div_update");
+	
+	if(div.css('display') != "none")
+	{
+		var w = div.width();
+		var h = div.height();
+		
+		var left =  div.offset().left;
+		var top = div.offset().top;
+		if(e.pageX <= left+w && e.pageX >= left && e.pageY >= top && e.pageY <= top + h)
+		{
+			return;			
+		}
+		else
+		{
+			div.hide();
+		}
+	}
+});
 
 var div = document.getElementById("my_div");
 var a_1 = document.getElementById("a_1");

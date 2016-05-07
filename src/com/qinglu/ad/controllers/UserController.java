@@ -33,51 +33,65 @@ import com.qinglu.ad.model.User;
 import com.qinglu.ad.service.DeviceService;
 import com.qinglu.ad.service.UserService;
 
-/** 
- * A controller class to process the user related requests.  
- *
+/**
+ * A controller class to process the user related requests.
+ * 
  * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UserController extends MultiActionController {
 
-    private UserService userService;
+	private UserService userService;
 
-    public UserController() {
-        userService = ServiceLocator.getUserService();
-    }
+	public UserController() {
+		userService = ServiceLocator.getUserService();
+	}
 
-    public ModelAndView list(HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
-        PresenceManager presenceManager = new PresenceManager();
-        
-        QueryResult<User> qr = userService.getUsers(0);
-        
-        String sindex = request.getParameter("index");
-        int index = 0;
-        if(sindex != null && !"".equals(sindex))
-        	index = Integer.parseInt(sindex);
-        Long num = qr.getNum();
-        int start = index*20;       
-        if(start > num)
-        {
-        	start = 0;       	
-        }      		
-              
-        List<User> userList = userService.getUsers(start).getList();
-        for (User user : userList) {
-            if (presenceManager.isAvailable(user)) {
-                user.setOnline(true);
-            } else {
-                user.setOnline(false);
-            }
-            
-           // user.setDevice(deviceService.findByDeviceId(user.getUsername()));
-        }
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("userList", userList);
-        mav.addObject("maxNum", num);
-        mav.setViewName("user/list");
-        return mav;
-    }
+	public ModelAndView list(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		PresenceManager presenceManager = new PresenceManager();
 
+		QueryResult<User> qr = userService.getUsers(0);
+
+		String sindex = request.getParameter("index");
+		int index = 0;
+		if (sindex != null && !"".equals(sindex))
+			index = Integer.parseInt(sindex);
+		Long num = qr.getNum();
+		int start = index * 20;
+		if (start > num) {
+			start = 0;
+		}
+
+		List<User> userList = userService.getUsers(start).getList();
+		for (User user : userList) {
+			if (presenceManager.isAvailable(user)) {
+				user.setOnline(true);
+			} else {
+				user.setOnline(false);
+			}
+
+			// user.setDevice(deviceService.findByDeviceId(user.getUsername()));
+		}
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("userList", userList);
+		mav.addObject("maxNum", num);
+		mav.setViewName("user/list");
+		return mav;
+	}
+
+	// 删除用户记录
+	public void deleteUser(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String s = request.getParameter("data");
+		try {
+			long id = 0;
+			if (s != null && !"".equals(s)) {
+				id = Long.parseLong(s);
+			}
+			userService.removeUser(id);
+			response.getWriter().print(1);
+		} catch (Exception e) {
+			response.getWriter().print(0);
+		}
+	}
 }
