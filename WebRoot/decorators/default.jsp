@@ -30,6 +30,10 @@
 				class="<c:if test="${topMenu eq 'ad'}"><c:out value="current" /></c:if>">广告管理</a></li>
 				<li><a href="/statistics.do"
 				class="<c:if test="${topMenu eq 'statistics'}"><c:out value="current" /></c:if>">广告统计</a></li>
+				<li><a href="/pushStatistics.do"
+				class="<c:if test="${topMenu eq 'pushStatistics'}"><c:out value="current" /></c:if>">推送统计</a></li>
+				<li><a href="/app.do"
+				class="<c:if test="${topMenu eq 'app'}"><c:out value="current" /></c:if>">应用统计</a></li>
 			</ul>
 			<div id="tabcontent">
 				<decorator:body/>			

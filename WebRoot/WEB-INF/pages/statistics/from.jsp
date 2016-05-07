@@ -16,9 +16,10 @@
 <table id="tableList" class="tablesorter" cellspacing="1">
 	<thead>
 		<tr>
-			
+			<th>广告ID</th>
 			<th>公司</th>
 			<th>广告类型</th>
+			<th>包名</th>
 			<th>图片路径</th>
 			<th>下载路径</th>	
 			<th>展示次数</th>
@@ -28,8 +29,10 @@
 	<tbody>
 		<c:forEach var="sess" items="${list}">
 			<tr>
+				<td><c:out value="${sess.id}" /></td>
 				<td><c:out value="${sess.company}" /></td>
 				<td><c:out value="${sess.type}" /></td>
+				<td><c:out value="${sess.packageName}" /></td>
 				<td align="center"><c:out value="${sess.picPath}" /></td>				
 				<td><c:out value="${sess.downloadPath}" /></td>
 				<td><c:out value="${sess.showNum}" /></td>

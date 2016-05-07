@@ -17,6 +17,7 @@
  */
 package org.androidpn.server.xmpp.push;
 
+import java.util.List;
 import java.util.Random;
 
 import org.androidpn.server.service.UserNotFoundException;
@@ -29,8 +30,13 @@ import org.dom4j.Element;
 import org.dom4j.QName;
 import org.xmpp.packet.IQ;
 
+import com.qinglu.ad.model.App;
 import com.qinglu.ad.model.Device;
+import com.qinglu.ad.model.User;
+import com.qinglu.ad.model.UserPush;
+import com.qinglu.ad.service.AppService;
 import com.qinglu.ad.service.DeviceService;
+import com.qinglu.ad.service.UserService;
 
 /** 
  * This class is to manage sending the notifcations to the users.  
@@ -60,16 +66,19 @@ public class NotificationManager {
      * @param message the message details
      * @param uri the uri
      */
-    public void sendBroadcast(String apiKey, String title, String message,
+    public int sendBroadcast(String apiKey, String title, String message,
             String uri) {
         log.debug("sendBroadcast()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
         for (ClientSession session : sessionManager.getSessions()) {
             if (session.getPresence().isAvailable()) {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
+                num++;
             }
         }
+        return num;
     }
 
     /**
@@ -80,31 +89,75 @@ public class NotificationManager {
      * @param message the message details
      * @param uri the uri
      */
-    public void sendNotifcationToUser(String apiKey, String username,
+    public int sendNotifcationToUser(String apiKey, String username,
             String title, String message, String uri) {
         log.debug("sendNotifcationToUser()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
         ClientSession session = sessionManager.getSession(username);
         if (session != null) {
             if (session.getPresence().isAvailable()) {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
+                num++;
             }
         }
+        return num;
     }
     
-    public void sendNotifcationToAppUser(String apiKey, String appname,
-            String title, String message, String uri,DeviceService deviceService) throws UserNotFoundException {
+    public int sendNotifcationToAppUser(String apiKey, String appname,
+            String title, String message, String uri,UserService userService,AppService appService) throws UserNotFoundException {
         log.debug("sendNotifcationToAppUser()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
         for (ClientSession session : sessionManager.getSessions()) {
-        	Device device = deviceService.findByDeviceId(session.getUsername());
-            if (session.getPresence().isAvailable()  && 
-            		device != null && device.getAppName().equals(appname)) {
+        	//Device device = deviceService.findByDeviceId(session.getUsername());
+        	User user = userService.getUserByUsername(session.getUsername());
+        	List<App> listapp = appService.findAppsByUserId(user.getId()).getList();
+        	boolean b = false;
+        	for(App app : listapp)
+        	{
+        		if(app.getPackageName().equals(appname))
+        		{
+        			b = true;
+        			break;
+        		}
+        	}
+            if (session.getPresence().isAvailable()  && b) {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
+                num++;
             }
         }
+        return num;
+    }
+    
+    //推送点击 下载 安装 过的在线用户
+    public int sendBroadcastClickDownloadInstall(String apiKey, String title, String message,
+            String uri,List<UserPush> list) throws UserNotFoundException {        
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
+        for (ClientSession session : sessionManager.getSessions()) {
+            if (session.getPresence().isAvailable() && judgeOnline(list,session.getUsername())) {
+                notificationIQ.setTo(session.getAddress());
+                session.deliver(notificationIQ);
+                num++;
+            }
+        }
+        return num;
+    }
+    
+    //判断list中用户是否在线
+    public boolean judgeOnline(List<UserPush> list,String username)
+    {
+    	for(UserPush up : list)
+    	{
+    		if(username.equals(up.getUsername()))
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     /**

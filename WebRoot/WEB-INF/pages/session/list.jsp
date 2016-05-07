@@ -18,8 +18,7 @@
 	<thead>
 		<tr>
 			
-			<th>设备ID</th>
-			<th>应用</th>
+			<th>用户ID</th>
 			<th>状态</th>
 			<th>在线</th>
 			<th>IP</th>
@@ -30,7 +29,6 @@
 		<c:forEach var="sess" items="${sessionList}">
 			<tr>
 				<td><c:out value="${sess.username}" /></td>
-				<td><c:out value="${sess.resource}" /></td>
 				<td align="center"><c:out value="${sess.status}" /></td>
 				<td>
 					<c:choose>

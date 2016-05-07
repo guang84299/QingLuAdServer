@@ -28,8 +28,10 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 		getHibernateTemplate().flush();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T find(Class<T> entityclass, Object id) {	
-		return (T) getHibernateTemplate().get(entityclass, (Serializable) id);
+		T t = (T) getHibernateTemplate().get(entityclass, (Serializable) id);
+		return t;
 	}
 
 	public <T> QueryResult<T> find(Class<T> entityclass, String columnName,
@@ -57,9 +59,39 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 		}else{
 			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
 			qr.setNum((Long)query.uniqueResult());
+		}
+		return qr;
+	}
+	
+	public <T> QueryResult<T> findGreater(Class<T> entityclass, String columnName,
+			String value, int firstindex, int maxresult,
+			LinkedHashMap<String, String> orderby) {
+		QueryResult<T> qr = new QueryResult<T>();
+		String entityname = getEntityName(entityclass);
+		String orderbysq = getOrderBy(orderby);
+		String sql = null;
+		Query query = null;
+		if(columnName!=null && value!=null)
+		{
+			sql = "select o from "+entityname+" o where o."+columnName+" >= '"+value+"' "+orderbysq;
+			query = this.getSession().createQuery(sql);
+		}else{
+			sql = "select o from "+entityname+" o "+orderbysq;	
+			query = this.getSession().createQuery(sql);
+		}	
+		query.setFirstResult(firstindex).setMaxResults(maxresult);
+		qr.setList(query.list());
+		if(columnName!=null && value!=null)
+		{
+			query = this.getSession().createQuery("select count(o) from "+entityname+" o where o."+columnName+" = '"+value+"' "+orderbysq);
+			qr.setNum((Long)query.uniqueResult());
+		}else{
+			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
+			qr.setNum((Long)query.uniqueResult());
 		}	
 		return qr;
 	}
+	
 	//按条件查询
 	protected String getOrderBy(LinkedHashMap<String, String> orderby)
 	{
@@ -81,5 +113,34 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 			entityname = entity.name();
 		}
 		return entityname;
+	}
+
+	public <T> QueryResult<T> find(Class<T> entityclass, String columnName,
+			String value, String columnName2, String value2, int firstindex,
+			int maxresult, LinkedHashMap<String, String> orderby) {
+		QueryResult<T> qr = new QueryResult<T>();
+		String entityname = getEntityName(entityclass);
+		String orderbysq = getOrderBy(orderby);
+		String sql = null;
+		Query query = null;
+		if(columnName!=null && value!=null && columnName2!=null && value2!=null)
+		{
+			sql = "select o from "+entityname+" o where o."+columnName+" = '"+value+"' and o."+columnName2+" = '"+value2+"' " +orderbysq;
+			query = this.getSession().createQuery(sql);
+		}else{
+			sql = "select o from "+entityname+" o "+orderbysq;	
+			query = this.getSession().createQuery(sql);
+		}	
+		query.setFirstResult(firstindex).setMaxResults(maxresult);
+		qr.setList(query.list());
+		if(columnName!=null && value!=null)
+		{
+			query = this.getSession().createQuery("select count(o) from "+entityname+" o where o."+columnName+" = '"+value+"' and o."+columnName2+" = '"+value2+"' "+orderbysq);
+			qr.setNum((Long)query.uniqueResult());
+		}else{
+			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
+			qr.setNum((Long)query.uniqueResult());
+		}	
+		return qr;
 	}
 }

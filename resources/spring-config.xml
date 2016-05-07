@@ -54,9 +54,9 @@
 
 	<!-- =============================================================== -->
 	<!-- Data Access Objects                                             -->
-	<!-- =============================================================== -->
-
-	<bean id="userDao" class="org.androidpn.server.dao.hibernate.UserDaoHibernate">
+	<!-- =============================================================== -->	
+	
+	<bean id="daoTools" class="com.qinglu.ad.daoimpl.DaoToolsImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -64,19 +64,10 @@
 	<!-- Services                                                        -->
 	<!-- =============================================================== -->
 
-	<bean id="userService" class="org.androidpn.server.service.impl.UserServiceImpl">
-		<property name="userDao" ref="userDao" />
+	<bean id="userService" class="com.qinglu.ad.serviceImpl.UserServiceImpl">
+		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
-	
-	<bean id="deviceDao" class="com.qinglu.ad.daoimpl.DeviceDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	
-	<bean id="deviceService" class="com.qinglu.ad.serviceImpl.DeviceServiceImpl">
-		<property name="deviceDao" ref="deviceDao" />
-	</bean>
-	
+			
 	<bean id="adPlatfromDao" class="com.qinglu.ad.daoimpl.AdPlatfromDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
@@ -84,16 +75,22 @@
 	<bean id="adPlatfromService" class="com.qinglu.ad.serviceImpl.AdPlatfromServiceImpl">
 		<property name="adPlatfromDao" ref="adPlatfromDao" />
 	</bean>
-	
-	<bean id="daoTools" class="com.qinglu.ad.daoimpl.DaoToolsImpl">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-	
+		
 	<bean id="adService" class="com.qinglu.ad.serviceImpl.AdServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
 	
-
+	<bean id="appService" class="com.qinglu.ad.serviceImpl.AppServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
+	
+	<bean id="pushService" class="com.qinglu.ad.serviceImpl.PushServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
+	
+	<bean id="userPushService" class="com.qinglu.ad.serviceImpl.UserPushServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
 	<!-- =============================================================== -->
 	<!-- SSL                                                             -->
 	<!-- =============================================================== -->

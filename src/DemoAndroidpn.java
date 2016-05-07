@@ -2,6 +2,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
@@ -36,14 +37,14 @@ public class DemoAndroidpn {
 //		String path = "a/b/c.png";
 //		String s = path.substring(0, path.lastIndexOf("/"));
 //		System.out.println(s);
-//		for(int i=0;i<10;i++)
+//		for(int i=0;i<10;i++)show status like '%Threads_connected%';
 //		System.out.println((int)(Math.random()*10%5));
 //		Ad ad = new Ad(1, "ss", 1, "sss", "kkk");
 //		System.out.println(objectToJson(ad).toString());
 //sudo cp /usr/local/mysql/support-files/my-default.cnf /etc/my.cnf		
 		//System.out.print(PinYinTools.getPinYin("我的"));
 		 String uuidRaw = UUID.randomUUID().toString();
-		 System.out.println(uuidRaw);
+		 System.out.println(new Date().toString());
 		 
 //		 [deviceId=867875022577552,
 //				 phoneNumber=+8618626058374,

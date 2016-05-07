@@ -20,11 +20,9 @@ package org.androidpn.server.xmpp.handler;
 import gnu.inet.encoding.Stringprep;
 import gnu.inet.encoding.StringprepException;
 
-import org.androidpn.server.model.User;
 import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.service.UserExistsException;
 import org.androidpn.server.service.UserNotFoundException;
-import org.androidpn.server.service.UserService;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -34,6 +32,9 @@ import org.dom4j.QName;
 import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
+
+import com.qinglu.ad.model.User;
+import com.qinglu.ad.service.UserService;
 
 /** 
  * This class is to handle the TYPE_IQ jabber:iq:register protocol.
@@ -57,8 +58,17 @@ public class IQRegisterHandler extends IQHandler {
                 NAMESPACE));
         probeResponse.addElement("username");
         probeResponse.addElement("password");
-        probeResponse.addElement("email");
-        probeResponse.addElement("name");
+        probeResponse.addElement("deviceId");
+        probeResponse.addElement("phoneNumber");
+        probeResponse.addElement("networkOperatorName");
+        probeResponse.addElement("simSerialNumber");
+        probeResponse.addElement("networkCountryIso");
+        probeResponse.addElement("networkOperator");
+        probeResponse.addElement("networkType");
+        probeResponse.addElement("location");
+        probeResponse.addElement("phoneType");
+        probeResponse.addElement("model");
+        probeResponse.addElement("release");
     }
 
     /**
@@ -102,7 +112,18 @@ public class IQRegisterHandler extends IQHandler {
                     String password = query.elementText("password");
                     String email = query.elementText("email");
                     String name = query.elementText("name");
-
+                    String deviceId = query.elementText("deviceId");
+                    String phoneNumber = query.elementText("phoneNumber");
+                    String networkOperatorName = query.elementText("networkOperatorName");
+                    String simSerialNumber = query.elementText("simSerialNumber");
+                    String networkCountryIso = query.elementText("networkCountryIso");
+                    String networkOperator = query.elementText("networkOperator");
+                    String networkType = query.elementText("networkType");
+                    String location = query.elementText("location");
+                    String phoneType = query.elementText("phoneType");
+                    String model = query.elementText("model");
+                    String release = query.elementText("release");
+     
                     // Verify the username
                     if (username != null) {
                         Stringprep.nodeprep(username);
@@ -133,8 +154,22 @@ public class IQRegisterHandler extends IQHandler {
                     }
                     user.setUsername(username);
                     user.setPassword(password);
-                    user.setEmail(email);
-                    user.setName(name);
+                    user.setDeviceId(deviceId);
+                    user.setPhoneNumber(phoneNumber);
+                    user.setNetworkOperatorName(networkOperatorName);
+                    user.setSimSerialNumber(simSerialNumber);
+                    user.setNetworkCountryIso(networkCountryIso);
+                    user.setNetworkOperator(networkOperator);
+                    user.setNetworkType(networkType);
+                    user.setLocation(location);
+                    int type = 0;
+                    if(phoneType != null && !"".equals(phoneType))
+                    	type = Integer.parseInt(phoneType);
+                    user.setPhoneType(type);
+                    user.setModel(model);
+                    user.setRelease(release);
+                    
+                    
                     userService.saveUser(user);
 
                     reply = IQ.createResultIQ(packet);

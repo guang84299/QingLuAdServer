@@ -1,33 +1,31 @@
 package com.qinglu.ad.controllers;
 
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.androidpn.server.model.User;
 import org.androidpn.server.service.ServiceLocator;
-import org.androidpn.server.service.UserService;
 import org.androidpn.server.xmpp.push.NotificationManager;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
-import com.qinglu.ad.model.Ad;
-import com.qinglu.ad.model.Device;
-import com.qinglu.ad.service.DeviceService;
+import com.qinglu.ad.dao.QueryResult;
+import com.qinglu.ad.model.App;
+import com.qinglu.ad.model.User;
+import com.qinglu.ad.service.AppService;
+import com.qinglu.ad.service.UserService;
 
 public class BaseController  extends MultiActionController{
 	private NotificationManager notificationManager;
-	private DeviceService deviceService;
 	private UserService userService;
+	private AppService appService;
 
 	public BaseController() {
 		notificationManager = new NotificationManager();
 		userService = ServiceLocator.getUserService();
-		deviceService = (DeviceService) ServiceLocator.getService("deviceService");
+		appService = (AppService) ServiceLocator.getService("appService");
 	}
 
 	public ModelAndView list(HttpServletRequest request,
@@ -43,53 +41,52 @@ public class BaseController  extends MultiActionController{
 		
 	}
 	
-	//添加设备信息
-	public void addDeviceInfo(HttpServletRequest request,
+	//添加APP信息
+	public void addAppInfo(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String s = request.getParameter("data");
 		try {
 			JSONObject jso = JSONObject.fromObject(s);
-			Device device = (Device) JSONObject.toBean(jso,Device.class);
-			Device d = deviceService.findByDeviceId(device.getDeviceId());
-			if(d != null)
+			String name = jso.getString("name");
+			String packageName =  jso.getString("packageName");
+			String id =  jso.getString("id");
+			
+			User user = userService.getUserByUsername(id);
+			
+			if(user == null)
 			{
-				if(d.getSubscriberId().equals(device.getSubscriberId()))
+				response.getWriter().print(0);
+				return;
+			}
+			
+			QueryResult<App> qr = appService.findAppsByUserId(user.getId());
+			boolean b = false;
+			
+			for(App app : qr.getList())
+			{
+				if(app.getPackageName().equals(packageName))
 				{
-					response.getWriter().print(1);
-					return;
+					b = true;
+					break;
 				}
+			}
+			//存在了
+			if(b)
+			{
+				response.getWriter().print(1);
+				return;
 			}
 			else
 			{
-				deviceService.addDevice(device);
+				App app = new App(user.getId(), name, packageName);
+				appService.add(app);
 				response.getWriter().print(1);
-			}					
+			}		
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			response.getWriter().print(0);
 		}
 		
 	}
 	
-	//test 添加测试信息
-	public void test(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		for(int i=1;i<50;i++)
-		{
-			User user = new User();
-			user.setUsername("000000000"+i);
-			user.setPassword("111111");
-			
-			userService.saveUser(user);
-			
-			Device device = new Device(user.getUsername(),"10086"+i , "networkOperatorName"+i, 
-					"simSerialNumber"+i, "networkCountryIso"+i, "networkOperator",
-					"WIFI", "1000"+i, 1, "19283882"+i, "com.test."+i, "test"+i,
-					"GT I9"+i, "4.3.1");
-			deviceService.addDevice(device);
-		}
-		
-		response.getWriter().print(1);
-	}
+	
 }

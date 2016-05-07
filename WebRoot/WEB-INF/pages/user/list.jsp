@@ -25,9 +25,8 @@
 			<th width="25%">Created</th>
 			--%>
 			<th>在线</th>
+			<th>用户ID</th>
 			<th>设备ID</th>
-			<th>应用</th>
-			<th>包名</th>
 			<th>手机型号</th>
 			<th>手机号码</th>
 			<%--<th>网络类型</th>--%>
@@ -53,16 +52,15 @@
 				</c:choose>
 				</td>
 				<td><c:out value="${user.username}" /></td>
-				<td><c:out value="${user.device.appName}" /></td>
-				<td><c:out value="${user.device.packageName}" /></td>
-				<td><c:out value="${user.device.model}" /></td>
-				<td><c:out value="${user.device.phoneNumber}" /></td>
+				<td><c:out value="${user.deviceId}" /></td>
+				<td><c:out value="${user.model}" /></td>
+				<td><c:out value="${user.phoneNumber}" /></td>
 				<%--<td><c:out value="${user.device.networkType}" /></td>--%>
-				<td><c:out value="${user.device.networkOperatorName}" /></td>
-				<td><c:out value="${user.device.simSerialNumber}" /></td>
+				<td><c:out value="${user.networkOperatorName}" /></td>
+				<td><c:out value="${user.simSerialNumber}" /></td>
 				<%--<td><c:out value="${user.device.networkCountryIso}" /></td>--%>
-				<td><c:out value="${user.device.release}" /></td>
-				<td><c:out value="${user.device.location}" /></td>
+				<td><c:out value="${user.release}" /></td>
+				<td><c:out value="${user.location}" /></td>
 				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${user.createdDate}" /></td>
 			</tr>
 		</c:forEach>

@@ -20,8 +20,9 @@ package org.androidpn.server.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserNotFoundException;
+
+import com.qinglu.ad.model.User;
 
 /** 
  * User DAO (Data Access Object) interface. 

@@ -16,9 +16,19 @@
 				/ad.do=adController
 				/base.do=baseController
 				/statistics.do=statisticsController
+				/pushStatistics.do=pushStatisticsController
+				/app.do=appController
 			</value>
 		</property>
 		<property name="order" value="1" />
+	</bean>
+	
+	<bean id="appController" class="com.qinglu.ad.controllers.AppController">
+		<property name="methodNameResolver" ref="paramResolver" />
+	</bean>
+	
+	<bean id="pushStatisticsController" class="com.qinglu.ad.controllers.PushStatisticsController">
+		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 	
 	<bean id="statisticsController" class="com.qinglu.ad.controllers.StatisticsController">
@@ -45,17 +55,17 @@
 		class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
 		
 
-	<bean id="userController" class="org.androidpn.server.console.controller.UserController">
+	<bean id="userController" class="com.qinglu.ad.controllers.UserController">
 		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 
 	<bean id="sessionController"
-		class="org.androidpn.server.console.controller.SessionController">
+		class="com.qinglu.ad.controllers.SessionController">
 		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 
 	<bean id="notificationController"
-		class="org.androidpn.server.console.controller.NotificationController">
+		class="com.qinglu.ad.controllers.NotificationController">
 		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 

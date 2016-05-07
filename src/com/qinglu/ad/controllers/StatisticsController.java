@@ -44,7 +44,7 @@ public class StatisticsController  extends MultiActionController{
         qr = adService.findAds(start);	
               		
 		mav.addObject("list", qr.getList());
-		mav.addObject("maxNum", qr.getNum());
+		mav.addObject("maxNum",num);
 		mav.setViewName("statistics/from");
 		return mav;
 	}

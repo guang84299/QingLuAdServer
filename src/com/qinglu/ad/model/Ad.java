@@ -27,6 +27,9 @@ public class Ad {
 	@Column(name = "downloadPath",  length = 128) 
 	private String downloadPath;//下载路径
 	
+	@Column(name = "packageName",  length = 64) 
+	private String packageName;
+	
 	private int showNum;//展示次数
 	
 	private int clickNum;//点击次数
@@ -36,10 +39,11 @@ public class Ad {
 		
 	}
 	
-	public Ad(String company, int type, String picPath,String downloadPath) {
+	public Ad(String company, int type,String packageName, String picPath,String downloadPath) {
 		super();
 		this.company = company;
 		this.type = type;
+		this.packageName = packageName;
 		this.picPath = picPath;
 		this.downloadPath = downloadPath;
 		this.showNum = 0;
@@ -92,6 +96,14 @@ public class Ad {
 
 	public void setClickNum(int clickNum) {
 		this.clickNum = clickNum;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
 	}
 	
 	

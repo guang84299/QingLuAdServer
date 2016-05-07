@@ -40,7 +40,6 @@ public class SessionVO {
 
     private Date createdDate;
     
-    private Device device;
 
     public String getUsername() {
         return username;
@@ -90,12 +89,6 @@ public class SessionVO {
         this.createdDate = createdDate;
     }
 
-	public Device getDevice() {
-		return device;
-	}
-
-	public void setDevice(Device device) {
-		this.device = device;
-	}
+	
 
 }

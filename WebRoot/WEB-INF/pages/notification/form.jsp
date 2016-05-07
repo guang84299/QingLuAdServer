@@ -24,11 +24,11 @@
 	</td>
 </tr>
 <tr id="trUsername" style="display:none;">
-	<td>设备ID:</td>
+	<td>用户ID:</td>
 	<td><input type="text" id="username" name="username" value="" style="width:380px;" /></td>
 </tr>
 <tr id="trApp" style="display:none;">
-	<td>应用名字:</td>
+	<td>应用包名:</td>
 	<td><input type="text" id="appname" name="appname" value="" style="width:380px;" /></td>
 </tr>
 <tr>
@@ -40,8 +40,8 @@
 	<td><textarea id="message" name="message" style="width:380px; height:80px;" >这是一个聚合广告推送!</textarea></td>
 </tr>
 <tr>
-	<td>下载路径:</td>
-	<td><input type="text" id="uri" name="uri" value="" style="width:380px;" /></td>
+	<td>广告ID:</td>
+	<td><input type="text" id="adId" name="adId" value="" style="width:380px;" /></td>
 </tr>
 <%--
 <tr>
@@ -72,7 +72,15 @@
         <input type="radio" name="broadcast2" value="app" /> 应用用户 
 	</td>
 </tr>
-
+<tr id="trUsername2" style="display:none;">
+	<td>用户ID:</td>
+	<td><input type="text" id="username" name="username" value="" style="width:380px;" /></td>
+</tr>
+<tr id="trApp2" style="display:none;">
+	<td>应用包名:</td>
+	<td><input type="text" id="appname" name="appname" value="" style="width:380px;" /></td>
+</tr>
+<tr>
 	<td>广告ID:</td>
 	<td><input type="text" id="adId" name="adId" value="" style="width:380px;" /></td>
 </tr>
@@ -115,6 +123,37 @@ $(function() {
 	else if ($('input[name=broadcast]')[2].checked) {
 		$('#trApp').show();
 		$('#trUsername').hide();
+	}
+	 
+});
+
+$(function() {
+	$('input[name=broadcast2]').click(function() {
+		if ($('input[name=broadcast2]')[0].checked) {
+			$('#trUsername2').hide();
+			$('#trApp2').hide();
+		}
+		else if ($('input[name=broadcast2]')[1].checked) {
+			$('#trUsername2').show();
+			$('#trApp2').hide();
+		}
+		else if ($('input[name=broadcast2]')[2].checked) {
+			$('#trApp2').show();
+			$('#trUsername2').hide();
+		}
+	});
+	
+	if ($('input[name=broadcast2]')[0].checked) {
+		$('#trUsername2').hide();
+		$('#trApp2').hide();
+	}
+	else if ($('input[name=broadcast2]')[1].checked) {
+		$('#trUsername2').show();
+		$('#trApp2').hide();
+	}
+	else if ($('input[name=broadcast2]')[2].checked) {
+		$('#trApp2').show();
+		$('#trUsername2').hide();
 	}
 	 
 });

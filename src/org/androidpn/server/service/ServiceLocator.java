@@ -19,6 +19,8 @@ package org.androidpn.server.service;
 
 import org.androidpn.server.xmpp.XmppServer;
 
+import com.qinglu.ad.service.UserService;
+
 /** 
  * This is a helper class to look up service objects.
  *

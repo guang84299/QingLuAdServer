@@ -17,10 +17,11 @@
  */
 package org.androidpn.server.xmpp.presence;
 
-import org.androidpn.server.model.User;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.SessionManager;
 import org.xmpp.packet.Presence;
+
+import com.qinglu.ad.model.User;
 
 /** 
  * This class is to manage the presences of users. 

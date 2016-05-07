@@ -9,6 +9,7 @@
 		<property name="hibernate.connection.url">${jdbc.url}</property>
 		<property name="hibernate.connection.username">${jdbc.username}</property>
 		<property name="hibernate.connection.password">${jdbc.password}</property>
+		
 
 		<!-- SQL dialect -->
 		<property name="hibernate.dialect">${hibernate.dialect}</property>
@@ -36,10 +37,12 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>
 
 		<!-- Mapping Files -->
-		<mapping class="org.androidpn.server.model.User" />
-		<mapping class="com.qinglu.ad.model.Device" />
+		<mapping class="com.qinglu.ad.model.User" />
+		<mapping class="com.qinglu.ad.model.App" />
 		<mapping class="com.qinglu.ad.model.AdPlatfrom" />
 		<mapping class="com.qinglu.ad.model.Ad" />
+		<mapping class="com.qinglu.ad.model.Push" />
+		<mapping class="com.qinglu.ad.model.UserPush" />
 		
 		
 		

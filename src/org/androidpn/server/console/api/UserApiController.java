@@ -16,12 +16,14 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.androidpn.server.model.User;
 import org.androidpn.server.service.ServiceLocator;
-import org.androidpn.server.service.UserService;
 import org.androidpn.server.xmpp.presence.PresenceManager;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import com.qinglu.ad.dao.QueryResult;
+import com.qinglu.ad.model.User;
+import com.qinglu.ad.service.UserService;
 
 public class UserApiController extends MultiActionController {
 
@@ -43,12 +45,13 @@ public class UserApiController extends MultiActionController {
 			String from = request.getParameter("from").toString();
 			if (!"".equals(from)) {
 				createDate = sdf.parse(from);
-				userList = userService.getUsersFromCreatedDate(createDate);
+				QueryResult<User> qr = userService.getUsersFromCreatedDate(createDate);
+				userList = qr.getList();//userService.getUsersFromCreatedDate(createDate);
 			} else {
-				userList = userService.getUsers();
+				userList = userService.getUsers(0).getList();
 			}
 		} catch (NullPointerException e) {
-			userList = userService.getUsers();
+			userList = userService.getUsers(0).getList();
 		}
 
 		String online = ServletRequestUtils.getStringParameter(request,

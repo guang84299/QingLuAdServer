@@ -19,6 +19,8 @@ package org.androidpn.server.service;
 
 import org.androidpn.server.xmpp.XmppServer;
 
+import com.qinglu.ad.service.UserService;
+
 /** 
  * Class desciption here.
  *
