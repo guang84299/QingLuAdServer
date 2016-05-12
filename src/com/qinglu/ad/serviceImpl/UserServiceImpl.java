@@ -101,4 +101,8 @@ public class UserServiceImpl implements UserService {
     	daoTools.delete(User.class, userId);
     }
 
+	public void updateUser(User user) {
+		daoTools.update(user);
+	}
+
 }

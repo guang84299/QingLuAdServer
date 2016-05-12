@@ -39,7 +39,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<th>sim卡序列号</th>
 			<%--<th>国家</th>--%>
 			<th>系统版本</th>
-			<th>位置</th>
+			<th>省份</th>
+			<th>城市</th>
 			<th>注册日期</th>
 			<th>操作</th>
 		</tr>
@@ -67,7 +68,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td><c:out value="${user.simSerialNumber}" /></td>
 				<%--<td><c:out value="${user.device.networkCountryIso}" /></td>--%>
 				<td><c:out value="${user.release}" /></td>
-				<td><c:out value="${user.location}" /></td>
+				<td><c:out value="${user.province}" /></td>
+				<td><c:out value="${user.city}" /></td>
 				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${user.createdDate}" /></td>
 				<td class="thUpdate"><input type="button" value="操作"/></td>
 			</tr>

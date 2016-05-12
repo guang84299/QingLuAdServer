@@ -15,7 +15,7 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 
 	public void add(Object obj) {
 		getHibernateTemplate().saveOrUpdate(obj);
-		getHibernateTemplate().flush();
+		getHibernateTemplate().flush();		
 	}
 
 	public <T> void delete(Class<T> entityclass, Object id) {
@@ -60,6 +60,7 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
 			qr.setNum((Long)query.uniqueResult());
 		}
+		this.getSession().close();
 		return qr;
 	}
 	
@@ -89,6 +90,7 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
 			qr.setNum((Long)query.uniqueResult());
 		}	
+		this.getSession().close();
 		return qr;
 	}
 	
@@ -141,6 +143,7 @@ public class DaoToolsImpl extends HibernateDaoSupport implements DaoTools {
 			query = this.getSession().createQuery("select count(o) from "+entityname+" o");
 			qr.setNum((Long)query.uniqueResult());
 		}	
+		this.getSession().close();
 		return qr;
 	}
 }

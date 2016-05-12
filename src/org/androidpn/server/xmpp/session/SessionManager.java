@@ -108,7 +108,7 @@ public class SessionManager {
      */
     public void addSession(ClientSession session) {
         preAuthSessions.remove(session.getStreamID().toString());
-        clientSessions.put(session.getAddress().toString(), session);
+        clientSessions.put(session.getAddress().toString(), session);     
     }
 
     /**

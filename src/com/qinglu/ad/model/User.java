@@ -100,6 +100,18 @@ public class User implements Serializable {
 	
 	@Column(name = "sys_release",  length = 64) 
 	private String release;//系统版本
+	
+	@Column(name = "province",  length = 64) 
+	private String province;//省份
+	
+	@Column(name = "city",  length = 64) 
+	private String city;//城市  
+	
+	@Column(name = "district",  length = 64) 
+	private String district;//区县 
+	
+	@Column(name = "street",  length = 64) 
+	private String street;//街道
     
 
     public User() {
@@ -246,6 +258,38 @@ public class User implements Serializable {
 
 	public void setRelease(String release) {
 		this.release = release;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
 	}
 
 	@Override

@@ -21,7 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 <script lanuage="javascript">
-var urll = "http://localhost:8080/user.do?index=0";
+var urll = "<%out.print(basePath); %>user.do?index=0";
 for(var i=0;i<3000;i++)
 {
 htmlobj=$.ajax({url:urll,async:false});

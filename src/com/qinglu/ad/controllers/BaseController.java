@@ -58,7 +58,6 @@ public class BaseController  extends MultiActionController{
 				response.getWriter().print(0);
 				return;
 			}
-			
 			QueryResult<App> qr = appService.findAppsByUserId(user.getId());
 			boolean b = false;
 			

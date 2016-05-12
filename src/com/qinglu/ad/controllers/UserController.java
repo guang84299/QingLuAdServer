@@ -78,6 +78,22 @@ public class UserController extends MultiActionController {
 		mav.setViewName("user/list");
 		return mav;
 	}
+	
+	//更新用户地理信息
+	public void updateUserLoction(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		String s = request.getParameter("data");
+		try {
+			long id = 0;
+			if (s != null && !"".equals(s)) {
+				id = Long.parseLong(s);
+			}
+			userService.removeUser(id);
+			response.getWriter().print(1);
+		} catch (Exception e) {
+			response.getWriter().print(0);
+		}
+	}
 
 	// 删除用户记录
 	public void deleteUser(HttpServletRequest request,

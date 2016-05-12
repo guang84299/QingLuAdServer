@@ -1,16 +1,9 @@
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
-import net.sf.json.JSONObject;
-
-import org.androidpn.server.xmpp.push.NotificationManager;
-
-import com.qinglu.ad.model.Ad;
-import com.qinglu.ad.tools.PinYinTools;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //
 //  DemoAndroidpn.java
@@ -22,47 +15,83 @@ import com.qinglu.ad.tools.PinYinTools;
 
 public class DemoAndroidpn {
 
-	public static void main(String[] args) {
+	private static final String[] portArray = new String[] { "80"};
+	private static int num = 0;
 
-//		String apiKey = "1234567890";
-//		String title = "feoa";
-//		String message = "Hello World!";
-//		String uri = "http://www.baidu.com";
-//
-//		NotificationManager notificationManager = new NotificationManager();
-//		notificationManager.sendBroadcast(apiKey, title, message, uri);
-		// notificationManager.sendNotifcationToUser(apiKey, username, title,
-		// message, uri);
-		
-//		String path = "a/b/c.png";
-//		String s = path.substring(0, path.lastIndexOf("/"));
-//		System.out.println(s);
-//		for(int i=0;i<10;i++)show status like '%Threads_connected%';
-//		System.out.println((int)(Math.random()*10%5));
-//		Ad ad = new Ad(1, "ss", 1, "sss", "kkk");
-//		System.out.println(objectToJson(ad).toString());
-//sudo cp /usr/local/mysql/support-files/my-default.cnf /etc/my.cnf		
-		//System.out.print(PinYinTools.getPinYin("我的"));
-		 String uuidRaw = UUID.randomUUID().toString();
-		 System.out.println(new Date().toString());
-		 
-//		 [deviceId=867875022577552,
-//				 phoneNumber=+8618626058374,
-//				 networkOperatorName=中国联通,
-//				 simSerialNumber=89860115834016195104,
-//				 networkCountryIso=cn,
-//				 networkOperator=46001, 
-//				 networkType=WIFI, 
-//				 location=[6297,8816661,-1], 
-//				 phoneType=1, 
-//				 subscriberId=460016072667533,
-//				 packageName=com.guang.migong.www,
-//				 appName=Demo,
-//				 model=ATH-AL00, 
-//				 release=5.1.1
-//				 ]
+	public static void main(String[] args) throws Exception {
+
+		// show status like '%Threads_connected%';
+		while(num < 5000)
+		{
+			Thread.sleep(5000);
+			num ++;
+			test();
+			System.out.println("=====================num="+num);
+		}
+    }  
+	
+	public static void test()
+	{
+		CountDownLatch begin = new CountDownLatch(1);  
+		CallHttpRequest.successRequest = 0;
+		CallHttpRequest.failRequest = 0;
+		CallHttpRequest.timeOutRequest = 0;
+	       
+        ArrayList<String> arrayList = new ArrayList<String>();
+        int count = 1000;
+        while(count > 0)
+        {
+        	count --;
+        	
+        	arrayList.add("http://120.25.87.115/app.do");
+        }
+        int allRequestSize = arrayList.size();  
+        System.out.println("all request size is " + allRequestSize);  
+        //设置最大的并发数量为60  
+        ExecutorService exec = Executors.newFixedThreadPool(1200);  
+  
+        CountDownLatch end = new CountDownLatch(allRequestSize);  
+      int i = 0;  
+        for (String str : arrayList) {  
+            exec.execute(new CallHttpRequest( str, begin, end));  
+              
+            /*如果想测试60个线程并发的访问,发配到同一台服务器上的两个tomcat，就用下面注释掉的代码 
+             * if (i % 2 == 0) { 
+                exec.execute(new CallHttpRequest(portArray[0], str, begin, end)); 
+            } else if (i % 2 == 1) { 
+                exec.execute(new CallHttpRequest(portArray[1], str, begin, end)); 
+            } */  
+          i++;  
+        //  System.out.println("=="+i);
+        }  
+        long startTime = System.currentTimeMillis();  //34703 ms69 ms
+        //当60个线程，初始化完成后，解锁，让六十个线程在4个双核的cpu服务器上一起竞争着跑，来模拟60个并发线程访问tomcat  
+        begin.countDown();  
+  
+        try {  
+            end.await();  
+        } catch (InterruptedException e) {  
+            e.printStackTrace();  
+        } finally {  
+        	System.out.println("all url requests is done!");  
+        	System.out.println("the success size: " + CallHttpRequest.successRequest);  
+        	System.out.println("the fail size: " + CallHttpRequest.failRequest);  
+        	System.out.println("the timeout size: " + CallHttpRequest.timeOutRequest);  
+            double successRate = (double)CallHttpRequest.successRequest / allRequestSize;  
+            System.out.println("the success rate is: " + successRate*100+"%");  
+            long endTime = System.currentTimeMillis();  
+            long costTime = endTime - startTime;  
+            if(CallHttpRequest.failRequest > 0)
+            {
+            	num = 5000;
+            }
+            System.out.println("the total time cost is: " + costTime + " ms");  
+            System.out.println("every request time cost is: " + costTime / allRequestSize  
+                    + " ms");  
+        }  
+        exec.shutdown();  
+        System.out.println("main method end");  
+  
 	}
-	
 
-	
 }

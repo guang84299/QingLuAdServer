@@ -43,5 +43,7 @@ public interface UserService {
     public User getUserByUsername(String username) throws UserNotFoundException;
 
     public void removeUser(Long userId);   
+    
+    public void updateUser(User user);
 
 }
