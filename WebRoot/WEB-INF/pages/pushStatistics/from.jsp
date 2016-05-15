@@ -32,6 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<th>点击次数</th>	
 			<th>下载次数</th>
 			<th>安装次数</th>	
+			<th>推送时间</th>	
 			<th>操作</th>		
 		</tr>
 	</thead>
@@ -70,6 +71,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td class="tdclickNum"><c:out value="${sess.clickNum}" /></td>
 				<td class="tddownloadNum"><c:out value="${sess.downloadNum}" /></td>
 				<td class="tdinstallNum"><c:out value="${sess.installNum}" /></td>
+				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${sess.createdDate}" /></td>
 				<td class="thUpdate"><input type="button" value="操作"/></td>
 			</tr>
 		</c:forEach>

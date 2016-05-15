@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="melibrary.com.genuitec.eclipse.j2eedt.core.MYECLIPSE_JAVAEE_5_CONTAINER"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/androidpn-server-0.5.0.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/bcprov-jdk15-140.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-beanutils-1.8.0.jar"/>

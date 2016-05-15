@@ -22,6 +22,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+
 import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.push.NotificationManager;
@@ -30,11 +32,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import com.qinglu.ad.model.Ad;
+import com.qinglu.ad.model.Area;
+import com.qinglu.ad.model.NetworkOperator;
+import com.qinglu.ad.model.PhoneModel;
 import com.qinglu.ad.model.Push;
 import com.qinglu.ad.model.UserPush;
 import com.qinglu.ad.service.AdService;
 import com.qinglu.ad.service.AppService;
+import com.qinglu.ad.service.AreaService;
 import com.qinglu.ad.service.DeviceService;
+import com.qinglu.ad.service.NetworkOperatorService;
+import com.qinglu.ad.service.PhoneModelService;
 import com.qinglu.ad.service.PushService;
 import com.qinglu.ad.service.UserPushService;
 import com.qinglu.ad.service.UserService;
@@ -52,6 +60,9 @@ public class NotificationController extends MultiActionController {
 	private AdService adService;
 	private PushService pushService;
 	private UserPushService userPushService;
+	private AreaService areaService;
+	private PhoneModelService phoneModelService;
+	private NetworkOperatorService networkOperatorService;
 
 	public NotificationController() {
 		notificationManager = new NotificationManager();
@@ -60,12 +71,16 @@ public class NotificationController extends MultiActionController {
 		adService = (AdService) ServiceLocator.getService("adService");
 		pushService = (PushService) ServiceLocator.getService("pushService");
 		userPushService = (UserPushService) ServiceLocator.getService("userPushService");
+		areaService =  (AreaService) ServiceLocator.getService("areaService");
+		phoneModelService = (PhoneModelService) ServiceLocator.getService("phoneModelService");
+		networkOperatorService = (NetworkOperatorService) ServiceLocator.getService("networkOperatorService");
 	}
 
 	public ModelAndView list(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView();
-		// mav.addObject("list", null);
+			HttpServletResponse response) throws Exception {		
+			
+		ModelAndView mav = new ModelAndView();					
+		// mav.addObject("areaList", areaList);
 		mav.setViewName("notification/form");
 		return mav;
 	}
@@ -78,6 +93,24 @@ public class NotificationController extends MultiActionController {
 				"username");
 		String appname = ServletRequestUtils.getStringParameter(request,
 				"appname");
+		
+		String area_province = ServletRequestUtils.getStringParameter(request,
+				"area_province");
+		String area_city = ServletRequestUtils.getStringParameter(request,
+				"area_city");
+		String phone_model = ServletRequestUtils.getStringParameter(request,
+				"phone_model");
+		String network_operator = ServletRequestUtils.getStringParameter(request,
+				"network_operator");
+		String session_from = ServletRequestUtils.getStringParameter(request,
+				"session_from");
+		String session_to = ServletRequestUtils.getStringParameter(request,
+				"session_to");
+		String createDate_from = ServletRequestUtils.getStringParameter(request,
+				"createDate_from");
+		String createDate_to = ServletRequestUtils.getStringParameter(request,
+				"createDate_to");
+		
 		String title = ServletRequestUtils.getStringParameter(request, "title");
 		String message = ServletRequestUtils.getStringParameter(request,
 				"message");
@@ -99,19 +132,21 @@ public class NotificationController extends MultiActionController {
 
 				if (broadcast.equalsIgnoreCase("all")) {
 					int num = notificationManager.sendBroadcast(apiKey, title,
-							message, uri);
+							message, uri,userService,userPushService,area_province,area_city,phone_model,
+							network_operator,session_from,session_to,createDate_from,createDate_to);
 					push.setSendNum(num);
 					pushService.update(push);
 				} else if (broadcast.equalsIgnoreCase("single")) {
 					int num = notificationManager.sendNotifcationToUser(apiKey,
-							username, title, message, uri);
+							username, title, message, uri,userPushService);
 					push.setSendNum(num);
 					push.setUserType(1);
 					pushService.update(push);
 				} else {
 					int num = notificationManager.sendNotifcationToAppUser(
 							apiKey, appname, title, message, uri, userService,
-							appService);
+							appService,userPushService,area_province,area_city,phone_model,
+							network_operator,session_from,session_to,createDate_from,createDate_to);
 					push.setSendNum(num);
 					push.setUserType(2);
 					pushService.update(push);
@@ -134,6 +169,23 @@ public class NotificationController extends MultiActionController {
 				"username");
 		String appname = ServletRequestUtils.getStringParameter(request,
 				"appname");
+		
+		String area_province = ServletRequestUtils.getStringParameter(request,
+				"area_province");
+		String area_city = ServletRequestUtils.getStringParameter(request,
+				"area_city");
+		String phone_model = ServletRequestUtils.getStringParameter(request,
+				"phone_model");
+		String network_operator = ServletRequestUtils.getStringParameter(request,
+				"network_operator");
+		String session_from = ServletRequestUtils.getStringParameter(request,
+				"session_from");
+		String session_to = ServletRequestUtils.getStringParameter(request,
+				"session_to");
+		String createDate_from = ServletRequestUtils.getStringParameter(request,
+				"createDate_from");
+		String createDate_to = ServletRequestUtils.getStringParameter(request,
+				"createDate_to");
 
 		String apiKey = "pushSpot";
 
@@ -147,18 +199,20 @@ public class NotificationController extends MultiActionController {
 			adId = adId + "&&&&&" + push.getId()+ "&&&&&" + ad.getPackageName();
 			if (broadcast.equalsIgnoreCase("all")) {
 				int num = notificationManager.sendBroadcast(apiKey, "", adId,
-						"");
+						"",userService,userPushService,area_province,area_city,phone_model,
+						network_operator,session_from,session_to,createDate_from,createDate_to);
 				push.setSendNum(num);
 				pushService.update(push);
 			} else if (broadcast.equalsIgnoreCase("single")) {
 				int num = notificationManager.sendNotifcationToUser(apiKey,
-						username, "", adId, "");
+						username, "", adId, "",userPushService);
 				push.setUserType(1);
 				push.setSendNum(num);
 				pushService.update(push);
 			} else {
 				int num = notificationManager.sendNotifcationToAppUser(apiKey,
-						appname, "", adId, "", userService, appService);
+						appname, "", adId, "", userService, appService,userPushService,area_province,area_city,phone_model,
+						network_operator,session_from,session_to,createDate_from,createDate_to);
 				push.setUserType(2);
 				push.setSendNum(num);
 				pushService.update(push);
@@ -189,7 +243,7 @@ public class NotificationController extends MultiActionController {
 				if(type == 1)
 				{
 					//user_push 表 ，只要点击了，必然上传一条数据
-					list = userPushService.findUserPushByPushId(pushId,100000).getList();					
+					list = userPushService.findByPushIdAndIsClick(pushId,1,100000).getList();					
 				}
 				else if(type == 2)
 				{
@@ -211,11 +265,48 @@ public class NotificationController extends MultiActionController {
 					String adData = adId + "&&&&&" + push.getId() +"&&&&&" + ad.getPackageName();
 					String apiKey = "pushSpot";
 					int num = notificationManager.sendBroadcastClickDownloadInstall(apiKey, "", adData,
-							"",list);
+							"",list,userPushService);
 					push.setSendNum(num);
 					pushService.update(push);
 				}
 			}
 		}
+	}
+	
+	
+	//获得地区
+	public void getAreas(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		List<Area> areaList = areaService.findAll().getList();
+		String s = JSONArray.fromObject(areaList).toString();
+		response.getWriter().print(s);
+	}
+	
+	//获得手机型号
+	public void getPhoneModels(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		List<PhoneModel> list = phoneModelService.findAll().getList();
+		String s = JSONArray.fromObject(list).toString();
+		response.getWriter().print(s);
+	}
+	
+	//获得运营商
+	public void getNetworkOperators(HttpServletRequest request,
+				HttpServletResponse response) throws Exception {
+			List<NetworkOperator> list = networkOperatorService.findAll().getList();
+			String s = JSONArray.fromObject(list).toString();
+			response.getWriter().print(s);
+		}
+	
+	//test
+	public void addAreas(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		areaService.add(new Area("河南省", "焦作市"));
+		areaService.add(new Area("四川省", "泸州市"));
+		areaService.add(new Area("广东省", "江门市"));
+		areaService.add(new Area("上海市", "上海市"));
+		
+		response.getWriter().print(1);
 	}
 }

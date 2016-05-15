@@ -43,10 +43,10 @@ public class UserPushServiceImpl implements UserPushService{
 		return daoTools.find(UserPush.class, null, null, firstindex, 20, lhm);
 	}
 
-	public QueryResult<UserPush> findUserPushByPushId(long pushId,int maxNum) {
+	public QueryResult<UserPush> findUserPushByPushId(long pushId,int start) {
 		LinkedHashMap<String, String> lhm = new LinkedHashMap<String, String>();
 		lhm.put("id", "desc");
-		return daoTools.find(UserPush.class, "pushId", pushId+"", 0, maxNum, lhm);
+		return daoTools.find(UserPush.class, "pushId", pushId+"", start, 10000000, lhm);
 	}
 
 	public UserPush findByPushIdAndUserName(long pushId, String username) {
@@ -65,6 +65,11 @@ public class UserPushServiceImpl implements UserPushService{
 	public QueryResult<UserPush> findByPushIdAndIsInstall(long pushId,
 			int isInstall,int maxNum) {
 		return daoTools.find(UserPush.class, "pushId", pushId+"","isInstall",isInstall+"", 0, maxNum, null);
+	}
+
+	public QueryResult<UserPush> findByPushIdAndIsClick(long pushId,
+			int isClick, int maxNum) {
+		return daoTools.find(UserPush.class, "pushId", pushId+"","isClick",isClick+"", 0, maxNum, null);
 	}
 
 }

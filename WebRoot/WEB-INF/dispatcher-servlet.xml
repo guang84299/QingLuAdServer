@@ -7,8 +7,6 @@
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<value>
-				/user_api.do=userapiController	
-				/notification_api.do=notificationapiController		
 				/index.do=filenameController
 				/user.do=userController
 				/session.do=sessionController
@@ -18,9 +16,14 @@
 				/statistics.do=statisticsController
 				/pushStatistics.do=pushStatisticsController
 				/app.do=appController
+				/pushCompare.do=pushCompareController
 			</value>
 		</property>
 		<property name="order" value="1" />
+	</bean>
+	
+	<bean id="pushCompareController" class="com.qinglu.ad.controllers.PushCompareController">
+		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 	
 	<bean id="appController" class="com.qinglu.ad.controllers.AppController">
@@ -43,14 +46,6 @@
 		<property name="methodNameResolver" ref="paramResolver" />
 	</bean>
 	
-	<bean id="userapiController" class="org.androidpn.server.console.api.UserApiController">
-		<property name="methodNameResolver" ref="paramResolver" />
-	</bean>
-	
-	<bean id="notificationapiController" class="org.androidpn.server.console.api.NotificationApiController">
-		<property name="methodNameResolver" ref="paramResolver" />
-	</bean>
-
 	<bean id="filenameController"
 		class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
 		

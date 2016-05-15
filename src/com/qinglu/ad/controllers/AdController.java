@@ -280,21 +280,26 @@ public class AdController extends MultiActionController {
 		file.write(new File(filePath + "/" + fileName));
 		// 上传apk
 		String fileApkName = apkPath;
-		if (apkFile.getSize() > 0) {
-			index = apkPath.lastIndexOf("/");
-			if (index != -1) {
-				fileApkName = apkPath.substring(index);
-			} else {
-				index = apkPath.lastIndexOf("\\");
+		if(apkPath != null)
+		{
+			if (apkFile.getSize() > 0) {
+				index = apkPath.lastIndexOf("/");
 				if (index != -1) {
 					fileApkName = apkPath.substring(index);
+				} else {
+					index = apkPath.lastIndexOf("\\");
+					if (index != -1) {
+						fileApkName = apkPath.substring(index);
+					}
 				}
-			}
-			apkFile.write(new File(filePathApk + "/" + fileApkName));
+				apkFile.write(new File(filePathApk + "/" + fileApkName));
 
-			// 重新设置下载路径
-			downloadPath = "apks/" + companyPinyin + "/" + fileApkName;
+				// 重新设置下载路径
+				downloadPath = "apks/" + companyPinyin + "/" + fileApkName;
+			}
 		}
+		
+		
 
 		int t = 1;
 		if (type != null && !"".equals(type))

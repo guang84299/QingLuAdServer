@@ -28,6 +28,8 @@ import com.qinglu.ad.model.Device;
  */
 public class SessionVO {
 
+	private long id;
+	
     private String username;
 
     private String resource;
@@ -41,7 +43,15 @@ public class SessionVO {
     private Date createdDate;
     
 
-    public String getUsername() {
+    public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
         return username;
     }
 

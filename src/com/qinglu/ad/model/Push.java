@@ -1,5 +1,8 @@
 package com.qinglu.ad.model;
 
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +31,9 @@ public class Push {
 	private int downloadNum;//下载次数
 	
 	private int installNum;//安装次数
+	
+	@Column(name = "created_date", updatable = false)
+    private Date createdDate = new Date();
 	
 	public Push(){}
 
@@ -114,6 +120,14 @@ public class Push {
 
 	public void setSendNum(int sendNum) {
 		this.sendNum = sendNum;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 	

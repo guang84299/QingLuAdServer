@@ -391,4 +391,8 @@ public class Connection {
         disabled, wanted, needed
     }
 
+    public long getSessionId()
+    {
+    	return ioSession.getId();
+    }
 }

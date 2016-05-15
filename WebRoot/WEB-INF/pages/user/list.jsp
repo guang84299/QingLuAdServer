@@ -41,6 +41,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<th>系统版本</th>
 			<th>省份</th>
 			<th>城市</th>
+			<th>总在线时长</th>
+			<th>上次在线时长</th>
+			<th>登录日期</th>	
 			<th>注册日期</th>
 			<th>操作</th>
 		</tr>
@@ -70,6 +73,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<td><c:out value="${user.release}" /></td>
 				<td><c:out value="${user.province}" /></td>
 				<td><c:out value="${user.city}" /></td>
+				<td><c:out value="${user.onlineTime}" />分钟</td>
+				<td><c:out value="${user.lastOnlineTime}" />分钟</td>
+				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${user.updatedDate}" /></td>
 				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${user.createdDate}" /></td>
 				<td class="thUpdate"><input type="button" value="操作"/></td>
 			</tr>

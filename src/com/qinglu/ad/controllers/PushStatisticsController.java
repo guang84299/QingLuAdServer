@@ -55,7 +55,7 @@ public class PushStatisticsController extends MultiActionController {
 	}
 
 	// 更新广告展示次数
-	public void updateShowNum(HttpServletRequest request,
+	public synchronized void updateShowNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String s = request.getParameter("data");
 		try {
@@ -74,7 +74,7 @@ public class PushStatisticsController extends MultiActionController {
 	}
 
 	// 更新广告点击次数
-	public void updateClickNum(HttpServletRequest request,
+	public synchronized void updateClickNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String s = request.getParameter("data");
 		try {
@@ -88,9 +88,13 @@ public class PushStatisticsController extends MultiActionController {
 			Push push = pushService.find(id);
 			push.setClickNum(push.getClickNum() + 1);
 			pushService.update(push);
-
-			UserPush pushUser = new UserPush(push.getId(), username, 1, 0, 0);
-			userPushService.add(pushUser);
+			
+			UserPush pushUser = userPushService.findByPushIdAndUserName(id,
+					username);
+			if (pushUser != null) {
+				pushUser.setIsClick(1);
+				userPushService.update(pushUser);
+			}
 
 			response.getWriter().print(1);
 		} catch (Exception e) {
@@ -99,7 +103,7 @@ public class PushStatisticsController extends MultiActionController {
 	}
 
 	// 更新广告下载次数
-	public void updateDownloadNum(HttpServletRequest request,
+	public synchronized void updateDownloadNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String s = request.getParameter("data");
 		try {
@@ -128,7 +132,7 @@ public class PushStatisticsController extends MultiActionController {
 	}
 
 	// 更新广告安装次数
-	public void updateInstallNum(HttpServletRequest request,
+	public synchronized void updateInstallNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		String s = request.getParameter("data");
 		try {
@@ -165,7 +169,7 @@ public class PushStatisticsController extends MultiActionController {
 			if (s != null && !"".equals(s)) {
 				id = Long.parseLong(s);
 			}
-			List<UserPush> list = userPushService.findUserPushByPushId(id, 5)
+			List<UserPush> list = userPushService.findByPushIdAndIsClick(id,1, 5)
 					.getList();
 			String data = JSONArray.fromObject(list).toString();
 			response.getWriter().print(data);

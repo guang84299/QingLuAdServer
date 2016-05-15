@@ -17,6 +17,9 @@
  */
 package org.androidpn.server.xmpp.push;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +39,7 @@ import com.qinglu.ad.model.User;
 import com.qinglu.ad.model.UserPush;
 import com.qinglu.ad.service.AppService;
 import com.qinglu.ad.service.DeviceService;
+import com.qinglu.ad.service.UserPushService;
 import com.qinglu.ad.service.UserService;
 
 /** 
@@ -57,7 +61,124 @@ public class NotificationManager {
     public NotificationManager() {
         sessionManager = SessionManager.getInstance();
     }
-
+    //判断是否符合地区
+    public boolean judeProvince_city(String area_province,String area_city,User user)
+    {
+    	if(area_province == null || "".equals(area_province))
+    		return true;
+    	if(area_city == null || "".equals(area_city))
+    		return true;
+    	boolean province_city = false;
+    	//判断是否选择所有的省
+    	if(!"all".equals(area_province))
+    	{
+    		//是否选择当前省的所有市
+    		if(!"all".equals(area_city))
+    		{
+    			if(area_province.equals(user.getProvince()) && area_city.equals(user.getCity()))
+    			{
+    				province_city = true;
+    			}
+    		}
+    		else
+    		{
+    			if(area_province.equals(user.getProvince()))
+    			{
+    				province_city = true;
+    			}
+    		}
+    	}
+    	else
+    	{
+    		province_city = true;
+    	}
+    	return province_city;
+    }
+   
+    //判断是否符合手机型号
+    public boolean judeModel(String model,User user)
+    {
+    	if("all".equals(model))
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		if(user.getModel().equals(model))
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+ 
+    //判断是否符合运营商
+    public boolean judeNetwork_operator(String network_operator,User user)
+    {
+    	if("all".equals(network_operator))
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		if(user.getNetworkOperatorName().equals(network_operator))
+    			return true;
+    	}
+    	return false;
+    }
+   
+    //判断是否在session区间内
+    public boolean judeSessionFromTo(String session_from,String session_to,long id)
+    {
+    	if(session_from == null || "".equals(session_from))
+    		return true;
+    	if(session_to == null || "".equals(session_to))
+    		return true;
+    	int from  = Integer.parseInt(session_from);
+    	int to = Integer.parseInt(session_to);
+    	
+    	if(to == 0)
+    		return true;
+    	if(id >= from && id <= to)
+    		return true;
+    	return false;
+    }
+   
+    //判断是否属于该应用
+    public boolean judeApp(String appname,long id,AppService appService)
+    {
+    	List<App> listapp = appService.findAppsByUserId(id).getList();
+    	boolean b = false;
+    	for(App app : listapp)
+    	{
+    		if(app.getPackageName().equals(appname))
+    		{
+    			b = true;
+    			break;
+    		}
+    	}
+    	return b;
+    }
+  
+    //判断是否在日期内
+    public boolean judeCreateDate(String createDate_from,String createDate_to,Date createDate)
+    {
+    	if(createDate_from == null || "".equals(createDate_from))
+    		return true;
+    	if(createDate_to == null || "".equals(createDate_to))
+    		return true;
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	try {
+			Date from = sdf.parse(createDate_from);
+			Date to = sdf.parse(createDate_to);
+			
+			if(createDate.getTime() >= from.getTime() && createDate.getTime() <= to.getTime())
+				return true;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	return false;
+    }
     /**
      * Broadcasts a newly created notification message to all connected users.
      * 
@@ -65,17 +186,46 @@ public class NotificationManager {
      * @param title the title
      * @param message the message details
      * @param uri the uri
+     * @throws UserNotFoundException 
      */
     public int sendBroadcast(String apiKey, String title, String message,
-            String uri) {
+            String uri,UserService userService,UserPushService userPushService,String area_province,String area_city,
+            String phone_model,String network_operator,String session_from,String session_to,
+            String createDate_from,String createDate_to) throws UserNotFoundException {
         log.debug("sendBroadcast()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         int num = 0;
         for (ClientSession session : sessionManager.getSessions()) {
-            if (session.getPresence().isAvailable()) {
+        	User user = userService.getUserByUsername(session.getUsername());
+        	
+            if (session.getPresence().isAvailable() 
+            		&& judeProvince_city(area_province,area_city,user)
+            		&& judeModel(phone_model,user)
+            		&& judeNetwork_operator(network_operator,user)
+            		&& judeSessionFromTo(session_from,session_to,session.getConnection().getSessionId())
+            		&& judeCreateDate(createDate_from,createDate_to,user.getCreatedDate())) {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
                 num++;
+                
+                String pushId = message.split("&&&&&")[1];
+                UserPush pushUser = new UserPush(Long.parseLong(pushId), user.getUsername(), 0, 0, 0);
+    			userPushService.add(pushUser);
+            }
+        }
+        return num;
+    }
+    //sendBroadcast 2
+    public int sendBroadcast(String apiKey, String title, String message,
+            String uri) throws UserNotFoundException {
+        log.debug("sendBroadcast()...");
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
+        for (ClientSession session : sessionManager.getSessions()) {        	
+            if (session.getPresence().isAvailable()) {
+                notificationIQ.setTo(session.getAddress());
+                session.deliver(notificationIQ);
+                num++;                            
             }
         }
         return num;
@@ -88,9 +238,31 @@ public class NotificationManager {
      * @param title the title
      * @param message the message details
      * @param uri the uri
+     * @throws UserNotFoundException 
+     * @throws NumberFormatException 
      */
     public int sendNotifcationToUser(String apiKey, String username,
-            String title, String message, String uri) {
+            String title, String message, String uri,UserPushService userPushService) throws NumberFormatException, UserNotFoundException {
+        log.debug("sendNotifcationToUser()...");
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
+        ClientSession session = sessionManager.getSession(username);
+        if (session != null) {
+            if (session.getPresence().isAvailable()) {
+                notificationIQ.setTo(session.getAddress());
+                session.deliver(notificationIQ);
+                num++;
+                
+                String pushId = message.split("&&&&&")[1];
+                UserPush pushUser = new UserPush(Long.parseLong(pushId), session.getUsername(), 0, 0, 0);
+    			userPushService.add(pushUser);
+            }
+        }
+        return num;
+    }
+    //sendNotifcationToUser 2
+    public int sendNotifcationToUser(String apiKey, String username,
+            String title, String message, String uri) throws NumberFormatException, UserNotFoundException {
         log.debug("sendNotifcationToUser()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         int num = 0;
@@ -105,25 +277,48 @@ public class NotificationManager {
         return num;
     }
     
+    
     public int sendNotifcationToAppUser(String apiKey, String appname,
-            String title, String message, String uri,UserService userService,AppService appService) throws UserNotFoundException {
+            String title, String message, String uri,UserService userService,
+            AppService appService,UserPushService userPushService,String area_province,String area_city,
+            String phone_model,String network_operator,String session_from,String session_to,
+            String createDate_from,String createDate_to) throws UserNotFoundException {
         log.debug("sendNotifcationToAppUser()...");
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         int num = 0;
         for (ClientSession session : sessionManager.getSessions()) {
-        	//Device device = deviceService.findByDeviceId(session.getUsername());
         	User user = userService.getUserByUsername(session.getUsername());
-        	List<App> listapp = appService.findAppsByUserId(user.getId()).getList();
-        	boolean b = false;
-        	for(App app : listapp)
-        	{
-        		if(app.getPackageName().equals(appname))
-        		{
-        			b = true;
-        			break;
-        		}
-        	}
-            if (session.getPresence().isAvailable()  && b) {
+        	
+            if (session.getPresence().isAvailable()  
+            		&& judeApp(appname,user.getId(),appService)
+            		&& judeProvince_city(area_province,area_city,user)
+            		&& judeModel(phone_model,user)
+            		&& judeNetwork_operator(network_operator,user)
+            		&& judeSessionFromTo(session_from,session_to,session.getConnection().getSessionId())
+            		&& judeCreateDate(createDate_from,createDate_to,user.getCreatedDate())) {
+                notificationIQ.setTo(session.getAddress());
+                session.deliver(notificationIQ);
+                num++;
+                
+                String pushId = message.split("&&&&&")[1];
+                UserPush pushUser = new UserPush(Long.parseLong(pushId), session.getUsername(), 0, 0, 0);
+    			userPushService.add(pushUser);
+            }
+        }
+        return num;
+    }
+    //sendNotifcationToAppUser 2
+    public int sendNotifcationToAppUser(String apiKey, String appname,
+            String title, String message, String uri,UserService userService,
+            AppService appService) throws UserNotFoundException {
+        log.debug("sendNotifcationToAppUser()...");
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
+        int num = 0;
+        for (ClientSession session : sessionManager.getSessions()) {
+        	User user = userService.getUserByUsername(session.getUsername());
+        	
+            if (session.getPresence().isAvailable()  
+            		&& judeApp(appname,user.getId(),appService)) {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
                 num++;
@@ -134,7 +329,7 @@ public class NotificationManager {
     
     //推送点击 下载 安装 过的在线用户
     public int sendBroadcastClickDownloadInstall(String apiKey, String title, String message,
-            String uri,List<UserPush> list) throws UserNotFoundException {        
+            String uri,List<UserPush> list,UserPushService userPushService) throws UserNotFoundException {        
         IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         int num = 0;
         for (ClientSession session : sessionManager.getSessions()) {
@@ -142,6 +337,10 @@ public class NotificationManager {
                 notificationIQ.setTo(session.getAddress());
                 session.deliver(notificationIQ);
                 num++;
+                
+                String pushId = message.split("&&&&&")[1];
+                UserPush pushUser = new UserPush(Long.parseLong(pushId), session.getUsername(), 0, 0, 0);
+    			userPushService.add(pushUser);
             }
         }
         return num;

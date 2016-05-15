@@ -57,7 +57,13 @@ public class User implements Serializable {
     private Date createdDate = new Date();
 
     @Column(name = "updated_date")
-    private Date updatedDate;
+    private Date updatedDate = new Date();
+    
+    @Column(name = "onlineTime",length = 64)
+    private String onlineTime = "0";
+    
+    @Column(name = "lastOnlineTime",length = 64)
+    private String lastOnlineTime = "0";
 
     @Transient
     private boolean online;
@@ -290,6 +296,22 @@ public class User implements Serializable {
 
 	public void setStreet(String street) {
 		this.street = street;
+	}
+
+	public String getOnlineTime() {
+		return onlineTime;
+	}
+
+	public void setOnlineTime(String onlineTime) {
+		this.onlineTime = onlineTime;
+	}
+
+	public String getLastOnlineTime() {
+		return lastOnlineTime;
+	}
+
+	public void setLastOnlineTime(String lastOnlineTime) {
+		this.lastOnlineTime = lastOnlineTime;
 	}
 
 	@Override

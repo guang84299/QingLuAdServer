@@ -79,6 +79,7 @@ public class SessionController extends MultiActionController {
         for (int i=start;i<end;i++) {
         	ClientSession sess = sessions[i];
             SessionVO vo = new SessionVO();
+            vo.setId(sess.getConnection().getSessionId());
             vo.setUsername(sess.getUsername());
             
             // Status

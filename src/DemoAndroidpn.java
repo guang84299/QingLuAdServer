@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,13 +22,18 @@ public class DemoAndroidpn {
 	public static void main(String[] args) throws Exception {
 
 		// show status like '%Threads_connected%';
-		while(num < 5000)
-		{
-			Thread.sleep(5000);
-			num ++;
-			test();
-			System.out.println("=====================num="+num);
-		}
+		Date d = new Date();
+		Thread.sleep(4000);
+		Date d2 = new Date();
+		
+		System.out.println(d2.getTime()-d.getTime());
+//		while(num < 1)
+//		{
+//			Thread.sleep(5000);
+//			num ++;
+//			test();
+//			System.out.println("=====================num="+num);
+//		}
     }  
 	
 	public static void test()
@@ -38,17 +44,17 @@ public class DemoAndroidpn {
 		CallHttpRequest.timeOutRequest = 0;
 	       
         ArrayList<String> arrayList = new ArrayList<String>();
-        int count = 1000;
+        int count = 100;
         while(count > 0)
         {
         	count --;
         	
-        	arrayList.add("http://120.25.87.115/app.do");
+        	arrayList.add("http://localhost:8080/pushStatistics.do?action=updateShowNum&data=56&&&&&1");
         }
         int allRequestSize = arrayList.size();  
         System.out.println("all request size is " + allRequestSize);  
         //设置最大的并发数量为60  
-        ExecutorService exec = Executors.newFixedThreadPool(1200);  
+        ExecutorService exec = Executors.newFixedThreadPool(100);  
   
         CountDownLatch end = new CountDownLatch(allRequestSize);  
       int i = 0;  

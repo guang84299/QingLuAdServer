@@ -43,6 +43,9 @@
 		<mapping class="com.qinglu.ad.model.Ad" />
 		<mapping class="com.qinglu.ad.model.Push" />
 		<mapping class="com.qinglu.ad.model.UserPush" />
+		<mapping class="com.qinglu.ad.model.PhoneModel" />
+		<mapping class="com.qinglu.ad.model.Area" />
+		<mapping class="com.qinglu.ad.model.NetworkOperator" />
 		
 		
 		

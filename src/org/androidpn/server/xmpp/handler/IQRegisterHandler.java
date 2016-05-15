@@ -41,7 +41,13 @@ import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
+import com.qinglu.ad.model.Area;
+import com.qinglu.ad.model.NetworkOperator;
+import com.qinglu.ad.model.PhoneModel;
 import com.qinglu.ad.model.User;
+import com.qinglu.ad.service.AreaService;
+import com.qinglu.ad.service.NetworkOperatorService;
+import com.qinglu.ad.service.PhoneModelService;
 import com.qinglu.ad.service.UserService;
 
 /**
@@ -54,6 +60,9 @@ public class IQRegisterHandler extends IQHandler {
 	private static final String NAMESPACE = "jabber:iq:register";
 
 	private UserService userService;
+	private PhoneModelService phoneModelService;
+	private AreaService areaService;
+	private NetworkOperatorService networkOperatorService;
 
 	private Element probeResponse;
 
@@ -62,6 +71,10 @@ public class IQRegisterHandler extends IQHandler {
 	 */
 	public IQRegisterHandler() {
 		userService = ServiceLocator.getUserService();
+		phoneModelService = (PhoneModelService) ServiceLocator.getService("phoneModelService");
+		areaService =  (AreaService) ServiceLocator.getService("areaService");
+		networkOperatorService = (NetworkOperatorService) ServiceLocator.getService("networkOperatorService");
+		
 		probeResponse = DocumentHelper.createElement(QName.get("query",
 				NAMESPACE));
 		probeResponse.addElement("username");
@@ -184,7 +197,8 @@ public class IQRegisterHandler extends IQHandler {
 					user.setRelease(release);
 
 					userService.saveUser(user);
-
+					phoneModelService.add(new PhoneModel(model));
+					networkOperatorService.add(new NetworkOperator(networkOperatorName));
 					reply = IQ.createResultIQ(packet);
 					sendHttpRequest(username,session.getHostAddress());
 				}
@@ -266,6 +280,7 @@ public class IQRegisterHandler extends IQHandler {
 							user.setStreet(street);
 							
 							userService.updateUser(user);
+							areaService.add(new Area(province, city));
 						}
 					}					
 				} catch (Exception e) {

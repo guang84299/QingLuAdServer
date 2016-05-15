@@ -18,6 +18,7 @@
 package org.androidpn.server.xmpp.session;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
@@ -25,12 +26,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.androidpn.server.service.ServiceLocator;
+import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.xmpp.XmppServer;
 import org.androidpn.server.xmpp.net.Connection;
 import org.androidpn.server.xmpp.net.ConnectionCloseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xmpp.packet.JID;
+
+import com.qinglu.ad.model.User;
+import com.qinglu.ad.service.UserService;
 
 /** 
  * This class manages the sessions connected to the server.
@@ -54,9 +60,11 @@ public class SessionManager {
     private final AtomicInteger connectionsCounter = new AtomicInteger(0);
 
     private ClientSessionListener clientSessionListener = new ClientSessionListener();
+    
+    private UserService userService;
 
     private SessionManager() {
-        serverName = XmppServer.getInstance().getServerName();
+        serverName = XmppServer.getInstance().getServerName();        
     }
 
     /**
@@ -108,7 +116,18 @@ public class SessionManager {
      */
     public void addSession(ClientSession session) {
         preAuthSessions.remove(session.getStreamID().toString());
-        clientSessions.put(session.getAddress().toString(), session);     
+        clientSessions.put(session.getAddress().toString(), session);
+        
+        try {
+        	userService = ServiceLocator.getUserService();
+        	User u = userService.getUserByUsername(session.getUsername());
+        	u.setUpdatedDate(new Date());
+        	userService.updateUser(u);
+		} catch (UserNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
 
     /**
@@ -171,6 +190,27 @@ public class SessionManager {
         boolean clientRemoved = clientSessions.remove(fullJID.toString()) != null;
         boolean preAuthRemoved = (preAuthSessions.remove(fullJID.getResource()) != null);
 
+       	try {
+       		userService = ServiceLocator.getUserService();
+       		User u = userService.getUserByUsername(session.getUsername());
+       		Date updated = u.getUpdatedDate();
+       		if(updated == null)
+       			updated =  new Date();
+        	long t = new Date().getTime() - updated.getTime();
+        	String lastOnlineTime = t/1000/60+"";
+        	
+        	String onlineTime = u.getOnlineTime();
+        	if(onlineTime == null)
+        		onlineTime = "0";
+        	long ot = Long.parseLong(onlineTime) + t/1000/60;
+        	
+        	u.setLastOnlineTime(lastOnlineTime);
+        	u.setOnlineTime(ot+"");
+        	userService.updateUser(u);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+        
         // Decrement the counter of user sessions
         if (clientRemoved || preAuthRemoved) {
             connectionsCounter.decrementAndGet();

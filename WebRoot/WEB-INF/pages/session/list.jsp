@@ -17,17 +17,18 @@
 <table id="tableList" class="tablesorter" cellspacing="1">
 	<thead>
 		<tr>
-			
+			<th>ID</th>
 			<th>用户ID</th>
 			<th>状态</th>
 			<th>在线</th>
-			<th>IP</th>
+			<th>IP</th>			
 			<th>注册日期</th>			
 		</tr>
 	</thead>
 	<tbody>
 		<c:forEach var="sess" items="${sessionList}">
 			<tr>
+				<td><c:out value="${sess.id}" /></td>
 				<td><c:out value="${sess.username}" /></td>
 				<td align="center"><c:out value="${sess.status}" /></td>
 				<td>

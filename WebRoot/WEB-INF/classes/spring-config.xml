@@ -91,6 +91,18 @@
 	<bean id="userPushService" class="com.qinglu.ad.serviceImpl.UserPushServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
+	
+	<bean id="phoneModelService" class="com.qinglu.ad.serviceImpl.PhoneModelServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
+	
+	<bean id="areaService" class="com.qinglu.ad.serviceImpl.AreaServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
+	
+	<bean id="networkOperatorService" class="com.qinglu.ad.serviceImpl.NetworkOperatorServiceImpl">
+		<property name="daoTools" ref="daoTools" />
+	</bean>
 	<!-- =============================================================== -->
 	<!-- SSL                                                             -->
 	<!-- =============================================================== -->
