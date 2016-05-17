@@ -19,6 +19,7 @@ package org.androidpn.server.xmpp.net;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Date;
 import java.util.Random;
 
 import org.androidpn.server.util.Config;
@@ -129,12 +130,22 @@ public class StanzaHandler {
         } else if ("iq".equals(tag)) {
             log.debug("iq...");
             processIQ(doc);
-        } else {
+        } 
+        else if("heartBeat".equals(tag))
+        {
+        	processHeartBeat();
+        }
+        else {
             log.warn("Unexpected packet tag (not message, iq, presence)"
                     + doc.asXML());
             session.close();
         }
 
+    }
+    
+    private void processHeartBeat()
+    {
+    	connection.setHeartBeat(new Date().getTime());
     }
 
     private void processMessage(Element doc) {

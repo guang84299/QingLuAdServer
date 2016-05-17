@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+
 /** 
  * This class starts the server as a standalone application using Spring configuration.
  *
@@ -68,7 +69,7 @@ public class XmppServer {
             throw new IllegalStateException("A server is already running");
         }
         instance = this;
-        start();
+        start();       
     }
 
     /**

@@ -10,7 +10,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- =============================================================== -->
-	<!-- Resources                                                       -->
+	<!-- Resources -->
 	<!-- =============================================================== -->
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -22,7 +22,7 @@
 	</bean>
 
 	<!-- =============================================================== -->
-	<!-- Data Source                                                     -->
+	<!-- Data Source -->
 	<!-- =============================================================== -->
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -38,7 +38,7 @@
 	</bean>
 
 	<!-- =============================================================== -->
-	<!-- Hibernate                                                       -->
+	<!-- Hibernate -->
 	<!-- =============================================================== -->
 
 	<bean id="sessionFactory"
@@ -53,73 +53,67 @@
 	</bean>
 
 	<!-- =============================================================== -->
-	<!-- Data Access Objects                                             -->
-	<!-- =============================================================== -->	
-	
+	<!-- Data Access Objects -->
+	<!-- =============================================================== -->
+
 	<bean id="daoTools" class="com.qinglu.ad.daoimpl.DaoToolsImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
 	<!-- =============================================================== -->
-	<!-- Services                                                        -->
+	<!-- Services -->
 	<!-- =============================================================== -->
 
 	<bean id="userService" class="com.qinglu.ad.serviceImpl.UserServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-			
+
 	<bean id="adPlatfromDao" class="com.qinglu.ad.daoimpl.AdPlatfromDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<bean id="adPlatfromService" class="com.qinglu.ad.serviceImpl.AdPlatfromServiceImpl">
 		<property name="adPlatfromDao" ref="adPlatfromDao" />
 	</bean>
-		
+
 	<bean id="adService" class="com.qinglu.ad.serviceImpl.AdServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="appService" class="com.qinglu.ad.serviceImpl.AppServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="pushService" class="com.qinglu.ad.serviceImpl.PushServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="userPushService" class="com.qinglu.ad.serviceImpl.UserPushServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="phoneModelService" class="com.qinglu.ad.serviceImpl.PhoneModelServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="areaService" class="com.qinglu.ad.serviceImpl.AreaServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
-	
+
 	<bean id="networkOperatorService" class="com.qinglu.ad.serviceImpl.NetworkOperatorServiceImpl">
 		<property name="daoTools" ref="daoTools" />
 	</bean>
 	<!-- =============================================================== -->
-	<!-- SSL                                                             -->
+	<!-- SSL -->
 	<!-- =============================================================== -->
 
-	<!--
-	<bean id="tlsContextFactory"
-		class="org.androidpn.server.ssl2.ResourceBasedTLSContextFactory">
-		<constructor-arg value="classpath:bogus_mina_tls.cert" />
-		<property name="password" value="boguspw" />
-		<property name="trustManagerFactory">
-			<bean class="org.androidpn.server.ssl2.BogusTrustManagerFactory" />
-		</property>
-	</bean>
-	-->
+	<!-- <bean id="tlsContextFactory" class="org.androidpn.server.ssl2.ResourceBasedTLSContextFactory"> 
+		<constructor-arg value="classpath:bogus_mina_tls.cert" /> <property name="password" 
+		value="boguspw" /> <property name="trustManagerFactory"> <bean class="org.androidpn.server.ssl2.BogusTrustManagerFactory" 
+		/> </property> </bean> -->
 
 	<!-- =============================================================== -->
-	<!-- MINA                                                            -->
+	<!-- MINA -->
 	<!-- =============================================================== -->
 
 	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
@@ -148,13 +142,15 @@
 						</constructor-arg>
 					</bean>
 				</entry>
-				<!--
-				<entry key="logging">
-					<bean class="org.apache.mina.filter.logging.LoggingFilter" />
-				</entry>
-				-->
+				<!-- <entry key="logging"> <bean class="org.apache.mina.filter.logging.LoggingFilter" 
+					/> </entry> -->
 			</map>
 		</property>
+	</bean>
+
+	<bean id="sessionConfig" factory-bean="ioAcceptor"
+		factory-method="getSessionConfig">
+		<property name="bothIdleTime" value="20" />
 	</bean>
 
 	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
@@ -164,6 +160,6 @@
 		<property name="filterChainBuilder" ref="filterChainBuilder" />
 		<property name="reuseAddress" value="true" />
 	</bean>
-	
-	
+
+
 </beans>

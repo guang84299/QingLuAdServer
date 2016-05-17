@@ -17,6 +17,7 @@
  */
 package org.androidpn.server.xmpp.net;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -98,7 +99,7 @@ public class XmppIoHandler implements IoHandler {
      * Invoked when a connection is closed.
      */
     public void sessionClosed(IoSession session) throws Exception {
-        log.debug("sessionClosed()...");
+        log.debug("======================sessionClosed()...");
         Connection connection = (Connection) session.getAttribute(CONNECTION);
         connection.close();
     }
@@ -108,12 +109,12 @@ public class XmppIoHandler implements IoHandler {
      */
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
-        log.debug("sessionIdle()...");
         Connection connection = (Connection) session.getAttribute(CONNECTION);
         if (log.isDebugEnabled()) {
             log.debug("Closing connection that has been idle: " + connection);
         }
-        connection.close();
+        if(connection.getHeartBeat() != 0 && new Date().getTime() - connection.getHeartBeat() > 30 * 1000)
+        	connection.close();
     }
 
     /**

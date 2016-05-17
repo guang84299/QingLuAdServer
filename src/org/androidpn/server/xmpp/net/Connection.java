@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.security.KeyStore;
+import java.util.Date;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
@@ -68,6 +69,8 @@ public class Connection {
     private static ThreadLocal encoder = new ThreadLocalEncoder();
 
     private boolean closed;
+    
+    private long heartBeat;
 
     /**
      * Constructor.
@@ -77,6 +80,7 @@ public class Connection {
     public Connection(IoSession ioSession) {
         this.ioSession = ioSession;
         this.closed = false;
+        this.heartBeat = 0;
     }
 
     //    /**
@@ -395,4 +399,14 @@ public class Connection {
     {
     	return ioSession.getId();
     }
+
+	public long getHeartBeat() {
+		return heartBeat;
+	}
+
+	public void setHeartBeat(long heartBeat) {
+		this.heartBeat = heartBeat;
+	}
+    
+    
 }
