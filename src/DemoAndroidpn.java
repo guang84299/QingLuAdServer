@@ -22,18 +22,14 @@ public class DemoAndroidpn {
 	public static void main(String[] args) throws Exception {
 
 		// show status like '%Threads_connected%';
-		Date d = new Date();
-		Thread.sleep(4000);
-		Date d2 = new Date();
 		
-		System.out.println(d2.getTime()-d.getTime());
-//		while(num < 1)
-//		{
-//			Thread.sleep(5000);
-//			num ++;
-//			test();
-//			System.out.println("=====================num="+num);
-//		}
+		while(num < 1)
+		{
+			Thread.sleep(5000);
+			num ++;
+			test();
+			System.out.println("=====================num="+num);
+		}
     }  
 	
 	public static void test()
@@ -49,7 +45,7 @@ public class DemoAndroidpn {
         {
         	count --;
         	
-        	arrayList.add("http://localhost:8080/pushStatistics.do?action=updateShowNum&data=56&&&&&1");
+        	arrayList.add("http://localhost:8080/pushStatistics.do?action=updateClickNum&data=129&&&&&1");
         }
         int allRequestSize = arrayList.size();  
         System.out.println("all request size is " + allRequestSize);  

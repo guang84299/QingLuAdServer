@@ -55,109 +55,121 @@ public class PushStatisticsController extends MultiActionController {
 	}
 
 	// 更新广告展示次数
-	public synchronized void updateShowNum(HttpServletRequest request,
+	public void updateShowNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String s = request.getParameter("data");
-		try {
-			long id = 0;
-			if (s != null && !"".equals(s)) {
-				s = s.split("&&&&&")[0];
-				id = Long.parseLong(s);
+		synchronized (pushService) {
+			String s = request.getParameter("data");
+			try {
+				long id = 0;
+				if (s != null && !"".equals(s)) {
+					s = s.split("&&&&&")[0];
+					id = Long.parseLong(s);
+				}
+				Push push = pushService.find(id);
+				push.setShowNum(push.getShowNum() + 1);
+				pushService.update(push);
+
+				response.getWriter().print(1);
+			} catch (Exception e) {
+				response.getWriter().print(0);
 			}
-			Push push = pushService.find(id);
-			push.setShowNum(push.getShowNum() + 1);
-			pushService.update(push);
-			response.getWriter().print(1);
-		} catch (Exception e) {
-			response.getWriter().print(0);
 		}
 	}
 
 	// 更新广告点击次数
 	public synchronized void updateClickNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String s = request.getParameter("data");
-		try {
-			long id = 0;
-			String username = null;
-			if (s != null && !"".equals(s)) {
-				String arr[] = s.split("&&&&&");
-				id = Long.parseLong(arr[0]);
-				username = arr[1];
-			}
-			Push push = pushService.find(id);
-			push.setClickNum(push.getClickNum() + 1);
-			pushService.update(push);
-			
-			UserPush pushUser = userPushService.findByPushIdAndUserName(id,
-					username);
-			if (pushUser != null) {
-				pushUser.setIsClick(1);
-				userPushService.update(pushUser);
-			}
+		synchronized (pushService) {
+			String s = request.getParameter("data");
+			try {
+				long id = 0;
+				String username = null;
+				if (s != null && !"".equals(s)) {
+					String arr[] = s.split("&&&&&");
+					id = Long.parseLong(arr[0]);
+					username = arr[1];
+				}
+				Push push = pushService.find(id);
+				push.setClickNum(push.getClickNum() + 1);
+				pushService.update(push);
 
-			response.getWriter().print(1);
-		} catch (Exception e) {
-			response.getWriter().print(0);
+				UserPush pushUser = userPushService.findByPushIdAndUserName(id,
+						username);
+				if (pushUser != null) {
+					pushUser.setIsClick(1);
+					userPushService.update(pushUser);
+				}
+
+				response.getWriter().print(1);
+			} catch (Exception e) {
+				response.getWriter().print(0);
+			}
 		}
+		
 	}
 
 	// 更新广告下载次数
 	public synchronized void updateDownloadNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String s = request.getParameter("data");
-		try {
-			long id = 0;
-			String username = null;
-			if (s != null && !"".equals(s)) {
-				String arr[] = s.split("&&&&&");
-				id = Long.parseLong(arr[0]);
-				username = arr[1];
-			}
-			Push push = pushService.find(id);
-			push.setDownloadNum(push.getDownloadNum() + 1);
-			pushService.update(push);
+		synchronized (pushService) {
+			String s = request.getParameter("data");
+			try {
+				long id = 0;
+				String username = null;
+				if (s != null && !"".equals(s)) {
+					String arr[] = s.split("&&&&&");
+					id = Long.parseLong(arr[0]);
+					username = arr[1];
+				}
+				Push push = pushService.find(id);
+				push.setDownloadNum(push.getDownloadNum() + 1);
+				pushService.update(push);
 
-			UserPush pushUser = userPushService.findByPushIdAndUserName(id,
-					username);
-			if (pushUser != null) {
-				pushUser.setIsDownload(1);
-				userPushService.update(pushUser);
-			}
+				UserPush pushUser = userPushService.findByPushIdAndUserName(id,
+						username);
+				if (pushUser != null) {
+					pushUser.setIsDownload(1);
+					userPushService.update(pushUser);
+				}
 
-			response.getWriter().print(1);
-		} catch (Exception e) {
-			response.getWriter().print(0);
+				response.getWriter().print(1);
+			} catch (Exception e) {
+				response.getWriter().print(0);
+			}
 		}
+		
 	}
 
 	// 更新广告安装次数
 	public synchronized void updateInstallNum(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String s = request.getParameter("data");
-		try {
-			long id = 0;
-			String username = null;
-			if (s != null && !"".equals(s)) {
-				String arr[] = s.split("&&&&&");
-				id = Long.parseLong(arr[0]);
-				username = arr[1];
-			}
-			Push push = pushService.find(id);
-			push.setInstallNum(push.getInstallNum() + 1);
-			pushService.update(push);
+		synchronized (pushService) {
+			String s = request.getParameter("data");
+			try {
+				long id = 0;
+				String username = null;
+				if (s != null && !"".equals(s)) {
+					String arr[] = s.split("&&&&&");
+					id = Long.parseLong(arr[0]);
+					username = arr[1];
+				}
+				Push push = pushService.find(id);
+				push.setInstallNum(push.getInstallNum() + 1);
+				pushService.update(push);
 
-			UserPush pushUser = userPushService.findByPushIdAndUserName(id,
-					username);
-			if (pushUser != null) {
-				pushUser.setIsInstall(1);
-				userPushService.update(pushUser);
-			}
+				UserPush pushUser = userPushService.findByPushIdAndUserName(id,
+						username);
+				if (pushUser != null) {
+					pushUser.setIsInstall(1);
+					userPushService.update(pushUser);
+				}
 
-			response.getWriter().print(1);
-		} catch (Exception e) {
-			response.getWriter().print(0);
+				response.getWriter().print(1);
+			} catch (Exception e) {
+				response.getWriter().print(0);
+			}
 		}
+		
 	}
 
 	// 获取当前push的点击人
@@ -169,8 +181,8 @@ public class PushStatisticsController extends MultiActionController {
 			if (s != null && !"".equals(s)) {
 				id = Long.parseLong(s);
 			}
-			List<UserPush> list = userPushService.findByPushIdAndIsClick(id,1, 5)
-					.getList();
+			List<UserPush> list = userPushService.findByPushIdAndIsClick(id, 1,
+					5).getList();
 			String data = JSONArray.fromObject(list).toString();
 			response.getWriter().print(data);
 		} catch (Exception e) {

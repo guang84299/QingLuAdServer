@@ -124,8 +124,7 @@ public class NotificationController extends MultiActionController {
 				String apiKey = Config.getString("apiKey", "");
 
 				Push push = new Push(ad.getId(), 0, 0, 0, 0, 0, 0, 0);
-				pushService.add(push);
-				push = pushService.findAds(0).getList().get(0);
+				pushService.add(push);				
 
 				//消息体 ： pushid ：包名
 				message = message + "&&&&&" + push.getId()  + "&&&&&" + ad.getPackageName();
@@ -134,22 +133,37 @@ public class NotificationController extends MultiActionController {
 					int num = notificationManager.sendBroadcast(apiKey, title,
 							message, uri,userService,userPushService,area_province,area_city,phone_model,
 							network_operator,session_from,session_to,createDate_from,createDate_to);
-					push.setSendNum(num);
-					pushService.update(push);
+					
+					synchronized (pushService) {
+						push = pushService.findAds(0).getList().get(0);
+						push.setSendNum(num);
+						pushService.update(push);
+					}
+					
 				} else if (broadcast.equalsIgnoreCase("single")) {
 					int num = notificationManager.sendNotifcationToUser(apiKey,
 							username, title, message, uri,userPushService);
-					push.setSendNum(num);
-					push.setUserType(1);
-					pushService.update(push);
+					
+					synchronized (pushService) {
+						push = pushService.findAds(0).getList().get(0);
+						push.setSendNum(num);
+						push.setUserType(1);
+						pushService.update(push);
+					}
+					
 				} else {
 					int num = notificationManager.sendNotifcationToAppUser(
 							apiKey, appname, title, message, uri, userService,
 							appService,userPushService,area_province,area_city,phone_model,
 							network_operator,session_from,session_to,createDate_from,createDate_to);
-					push.setSendNum(num);
-					push.setUserType(2);
-					pushService.update(push);
+					
+					synchronized (pushService) {
+						push = pushService.findAds(0).getList().get(0);
+						push.setSendNum(num);
+						push.setUserType(2);
+						pushService.update(push);
+					}
+					
 				}
 			}
 		}
@@ -194,28 +208,43 @@ public class NotificationController extends MultiActionController {
 			
 			Push push = new Push(Long.parseLong(adId), 1, 0, 0, 0, 0, 0, 0);
 			pushService.add(push);
-			push = pushService.findAds(0).getList().get(0);
+			
 			//adId ： pushid ：包名
 			adId = adId + "&&&&&" + push.getId()+ "&&&&&" + ad.getPackageName();
 			if (broadcast.equalsIgnoreCase("all")) {
 				int num = notificationManager.sendBroadcast(apiKey, "", adId,
 						"",userService,userPushService,area_province,area_city,phone_model,
 						network_operator,session_from,session_to,createDate_from,createDate_to);
-				push.setSendNum(num);
-				pushService.update(push);
+				
+				synchronized (pushService) {
+					push = pushService.findAds(0).getList().get(0);
+					push.setSendNum(num);
+					pushService.update(push);
+				}
+				
 			} else if (broadcast.equalsIgnoreCase("single")) {
 				int num = notificationManager.sendNotifcationToUser(apiKey,
 						username, "", adId, "",userPushService);
-				push.setUserType(1);
-				push.setSendNum(num);
-				pushService.update(push);
+				
+				synchronized (pushService) {
+					push = pushService.findAds(0).getList().get(0);
+					push.setUserType(1);
+					push.setSendNum(num);
+					pushService.update(push);
+				}
+				
 			} else {
 				int num = notificationManager.sendNotifcationToAppUser(apiKey,
 						appname, "", adId, "", userService, appService,userPushService,area_province,area_city,phone_model,
 						network_operator,session_from,session_to,createDate_from,createDate_to);
-				push.setUserType(2);
-				push.setSendNum(num);
-				pushService.update(push);
+				
+				synchronized (pushService) {
+					push = pushService.findAds(0).getList().get(0);
+					push.setUserType(2);
+					push.setSendNum(num);
+					pushService.update(push);
+				}
+				
 			}
 		}
 
@@ -260,14 +289,19 @@ public class NotificationController extends MultiActionController {
 					
 					Push push = new Push(adId, 1, 3, 0, 0, 0, 0, 0);
 					pushService.add(push);
-					push = pushService.findAds(0).getList().get(0);
+					
 					//广告id 加上 push的id 和 包名
 					String adData = adId + "&&&&&" + push.getId() +"&&&&&" + ad.getPackageName();
 					String apiKey = "pushSpot";
 					int num = notificationManager.sendBroadcastClickDownloadInstall(apiKey, "", adData,
 							"",list,userPushService);
-					push.setSendNum(num);
-					pushService.update(push);
+					
+					synchronized (pushService) {
+						push = pushService.findAds(0).getList().get(0);
+						push.setSendNum(num);
+						pushService.update(push);
+					}
+					
 				}
 			}
 		}
