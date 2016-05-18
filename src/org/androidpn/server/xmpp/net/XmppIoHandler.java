@@ -83,8 +83,8 @@ public class XmppIoHandler implements IoHandler {
      * Invoked when a connection has been opened.
      */
     public void sessionOpened(IoSession session) throws Exception {
-        log.debug("sessionOpened()...");
-        log.debug("remoteAddress=" + session.getRemoteAddress());
+        log.warn("sessionOpened()...");
+        log.warn("sessionid=" + session.getId() + "   remoteAddress=" + session.getRemoteAddress());
         // Create a new XML parser
         XMLLightweightParser parser = new XMLLightweightParser("UTF-8");
         session.setAttribute(XML_PARSER, parser);
@@ -99,7 +99,7 @@ public class XmppIoHandler implements IoHandler {
      * Invoked when a connection is closed.
      */
     public void sessionClosed(IoSession session) throws Exception {
-        log.debug("======================sessionClosed()...");
+        log.warn(session.getId()+"======================sessionClosed()...");
         Connection connection = (Connection) session.getAttribute(CONNECTION);
         connection.close();
     }
@@ -110,11 +110,12 @@ public class XmppIoHandler implements IoHandler {
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
         Connection connection = (Connection) session.getAttribute(CONNECTION);
-        if (log.isDebugEnabled()) {
-            log.debug("Closing connection that has been idle: " + connection);
-        }
-        if(connection.getHeartBeat() != 0 && new Date().getTime() - connection.getHeartBeat() > 30 * 1000)
-        	connection.close();
+        if(connection.getHeartBeat() != 0)
+        {
+        	 long t = new Date().getTime() - connection.getHeartBeat();
+             log.warn(session.getId()+"======================sessionIdle()..."+t);
+             connection.close();
+        }       
     }
 
     /**

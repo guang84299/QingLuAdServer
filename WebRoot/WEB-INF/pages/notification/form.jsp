@@ -69,7 +69,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<td>	
 	<input type="text" id="session_from" name="session_from" value="0" style="width:100px;" />
 	至
-	<input type="text" id="session_to" name="session_to" value="100" style="width:100px;" />
+	<input type="text" id="session_to" name="session_to" value="0" style="width:100px;" />
 	</td>
 </tr>
 
@@ -164,7 +164,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<td>	
 	<input type="text" id="session_from" name="session_from" value="0" style="width:100px;" />
 	至
-	<input type="text" id="session_to" name="session_to" value="100" style="width:100px;" />
+	<input type="text" id="session_to" name="session_to" value="0" style="width:100px;" />
 	</td>
 </tr>
 

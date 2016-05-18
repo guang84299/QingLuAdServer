@@ -150,7 +150,7 @@
 
 	<bean id="sessionConfig" factory-bean="ioAcceptor"
 		factory-method="getSessionConfig">
-		<property name="bothIdleTime" value="20" />
+		<property name="bothIdleTime" value="23" />
 	</bean>
 
 	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"

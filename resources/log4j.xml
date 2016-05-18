@@ -8,6 +8,12 @@
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="{%-5p} [%d] &lt;%c&gt; : %m%n" />
 		</layout>
+		 <!--过滤器设置输出的级别-->       
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">       
+            <param name="levelMin" value="warn" />       
+            <param name="levelMax" value="error" />       
+            <param name="AcceptOnMatch" value="true" />       
+        </filter>       
 	</appender>
 
 	<appender name="logfile" class="org.apache.log4j.RollingFileAppender">
